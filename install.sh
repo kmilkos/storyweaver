@@ -85,18 +85,22 @@ if [ "$(id -u)" = "0" ]; then
         libfontconfig1-dev libharfbuzz-dev 2>/dev/null || true
 fi
 
-pip install --quiet --upgrade pip setuptools wheel 2>/dev/null || true
-
-# Try pre-built wheels first; fall back to apt for PyMuPDF if source build fails
-if ! pip install --quiet -r backend/requirements.txt 2>/dev/null; then
-    warn "Some packages failed to build — trying apt alternatives"
-    if [ "$(id -u)" = "0" ]; then
-        apt-get install -y -qq python3-fitz 2>/dev/null || true
+pip install --upgrade pip setuptools wheel 2>&1 | while IFS= read -r line; do
+    if echo "$line" | grep -qi "error"; then
+        printf "  │  ${RED}%s${RESET}\n" "$line"
     fi
-    # Retry excluding heavy build packages
-    grep -v "PyMuPDF" backend/requirements.txt > /tmp/requirements-light.txt
-    pip install --quiet -r /tmp/requirements-light.txt 2>/dev/null || true
-fi
+done
+
+while IFS= read -r pkg; do
+    [ -z "$pkg" ] && continue
+    dep=$(echo "$pkg" | sed 's/#.*//' | xargs)
+    printf "  │  ${CYAN}•${RESET} %s" "$dep"
+    if pip install "$dep" > /tmp/pip_install.log 2>&1; then
+        printf "\r  │  ${GREEN}✓${RESET} %s\n" "$dep"
+    else
+        printf "\r  │  ${YELLOW}⚠${RESET} %s (see /tmp/pip_install.log)\n" "$dep"
+    fi
+done < backend/requirements.txt
 
 # Verify core imports
 for mod in fastapi pydantic moviepy PIL; do
