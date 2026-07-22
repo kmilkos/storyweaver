@@ -78,16 +78,30 @@ if [ "$PYTHON_VER" = "3.14" ]; then
     warn "Python 3.14 detected — using compatibility mode (PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1)"
 fi
 
+# Install system build deps for PyMuPDF if running as root
+if [ "$(id -u)" = "0" ]; then
+    apt-get install -y -qq build-essential pkg-config \
+        libjpeg-dev libopenjp2-7-dev libfreetype6-dev \
+        libfontconfig1-dev libharfbuzz-dev 2>/dev/null || true
+fi
+
 pip install --quiet --upgrade pip setuptools wheel 2>/dev/null || true
 
-pip install --quiet -r backend/requirements.txt 2>&1 | while IFS= read -r line; do
-    if echo "$line" | grep -qiE "error|failed|warning"; then
-        printf "  │  ${YELLOW}%s${RESET}\n" "$line"
+# Try pre-built wheels first; fall back to apt for PyMuPDF if source build fails
+if ! pip install --quiet -r backend/requirements.txt 2>/dev/null; then
+    warn "Some packages failed to build — trying apt alternatives"
+    if [ "$(id -u)" = "0" ]; then
+        apt-get install -y -qq python3-fitz 2>/dev/null || true
     fi
-done
+    # Retry excluding heavy build packages
+    grep -v "PyMuPDF" backend/requirements.txt > /tmp/requirements-light.txt
+    pip install --quiet -r /tmp/requirements-light.txt 2>/dev/null || true
+fi
 
-python3 -c "import fastapi, pydantic, moviepy, PIL; print('  │  ✓ fastapi pydantic moviepy Pillow')" 2>/dev/null || \
-warn "Some packages may have issues with Python $PYTHON_VER"
+# Verify core imports
+for mod in fastapi pydantic moviepy PIL; do
+    python3 -c "import $mod" 2>/dev/null && printf "  │  ✓ %-12s %s\n" "$mod" "$(python3 -c "import $mod; print(getattr($mod, '__version__', 'ok'))" 2>/dev/null)" || warn "$mod import failed"
+done
 
 ok "Dependencies installed"
 
