@@ -2,14 +2,17 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from app.config import settings
+from app.config import get_env
 
 
 def generate_image(prompt: str, output_path: Path, width: int = 1920, height: int = 1080) -> str:
-    if settings.stability_api_key:
+    stability_key = get_env("STABILITY_API_KEY")
+    gemini_key = get_env("GEMINI_API_KEY")
+
+    if stability_key:
         return _generate_stability(prompt, output_path, width, height)
 
-    if settings.gemini_api_key:
+    if gemini_key:
         try:
             return _generate_imagen(prompt, output_path)
         except Exception:
@@ -23,7 +26,8 @@ def generate_image(prompt: str, output_path: Path, width: int = 1920, height: in
 def _generate_imagen(prompt: str, output_path: Path) -> str:
     from google import genai
 
-    client = genai.Client(api_key=settings.gemini_api_key)
+    api_key = get_env("GEMINI_API_KEY")
+    client = genai.Client(api_key=api_key)
     response = client.models.generate_images(
         model="imagen-3.0-generate-002",
         prompt=prompt,
@@ -37,10 +41,11 @@ def _generate_imagen(prompt: str, output_path: Path) -> str:
 def _generate_stability(prompt: str, output_path: Path, width: int, height: int) -> str:
     import httpx
 
+    api_key = get_env("STABILITY_API_KEY")
     response = httpx.post(
         "https://api.stability.ai/v2beta/stable-image/generate/sd3",
         headers={
-            "authorization": f"Bearer {settings.stability_api_key}",
+            "authorization": f"Bearer {api_key}",
             "accept": "image/*",
         },
         files={"none": ""},

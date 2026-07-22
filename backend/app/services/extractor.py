@@ -3,16 +3,17 @@ from __future__ import annotations
 import json
 import re
 
-from app.config import settings
+from app.config import get_env
 
 
 def _call_gemini(prompt: str) -> str:
-    if not settings.gemini_api_key:
+    api_key = get_env("GEMINI_API_KEY")
+    if not api_key:
         raise ValueError("GEMINI_API_KEY not configured")
 
     from google import genai
 
-    client = genai.Client(api_key=settings.gemini_api_key)
+    client = genai.Client(api_key=api_key)
     response = client.models.generate_content(
         model="gemini-2.5-flash",
         contents=prompt,

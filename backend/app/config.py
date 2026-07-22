@@ -15,6 +15,19 @@ class Settings(BaseSettings):
 settings = Settings()
 
 BACKEND_DIR = Path(__file__).parent.parent
+ENV_PATH = BACKEND_DIR / ".env"
+
+
+def get_env(key: str, default: str = "") -> str:
+    if ENV_PATH.exists():
+        for line in ENV_PATH.read_text().splitlines():
+            line = line.strip()
+            if line.startswith("#") or "=" not in line:
+                continue
+            k, _, v = line.partition("=")
+            if k.strip() == key:
+                return v.strip()
+    return default
 
 if settings.projects_dir:
     PROJECTS_DIR = Path(settings.projects_dir)

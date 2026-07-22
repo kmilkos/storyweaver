@@ -34,10 +34,11 @@ async def generate_speech(text: str, voice_id: str, output_path: Path) -> str:
 
 
 async def _generate_gemini_tts(text: str, voice_id: str, output_path: Path) -> str:
-    from app.config import settings
+    from app.config import get_env
     from google import genai
 
-    client = genai.Client(api_key=settings.gemini_api_key)
+    api_key = get_env("GEMINI_API_KEY")
+    client = genai.Client(api_key=api_key)
     response = client.models.generate_content(
         model="gemini-2.5-flash",
         contents=text,
