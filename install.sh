@@ -40,7 +40,11 @@ if command -v ffmpeg &>/dev/null; then
     ok "ffmpeg found: $(ffmpeg -version 2>&1 | head -1)"
 else
     warn "ffmpeg not found — video export unavailable"
-    warn "Install: sudo apt install ffmpeg"
+    if [ "$(id -u)" = "0" ]; then
+        apt-get update -qq && apt-get install -y -qq ffmpeg 2>/dev/null && ok "ffmpeg installed" || warn "Could not install ffmpeg automatically"
+    else
+        warn "Install: sudo apt install ffmpeg"
+    fi
 fi
 
 footer
@@ -48,9 +52,10 @@ footer
 # ── 2. Virtual Environment ───────────────────────────────────
 header "2  Virtual Environment"
 
-if [ -d ".venv" ]; then
+if [ -d ".venv" ] && [ -f ".venv/bin/activate" ]; then
     ok "Virtual environment exists (reusing)"
 else
+    rm -rf .venv
     python3 -m venv .venv
     ok "Virtual environment created"
 fi
