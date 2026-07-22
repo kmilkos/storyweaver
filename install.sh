@@ -56,6 +56,10 @@ if [ -d ".venv" ] && [ -f ".venv/bin/activate" ]; then
     ok "Virtual environment exists (reusing)"
 else
     rm -rf .venv
+    PYVER=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+    if [ "$(id -u)" = "0" ]; then
+        apt-get install -y -qq "python${PYVER}-venv" 2>/dev/null || true
+    fi
     python3 -m venv .venv
     ok "Virtual environment created"
 fi
