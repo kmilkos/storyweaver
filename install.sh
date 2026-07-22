@@ -141,6 +141,17 @@ footer
 header "5  Launching Server"
 
 port="${PORT:-8000}"
+
+# Free the port if anything is already listening
+if command -v fuser &>/dev/null; then
+    fuser -k "${port}/tcp" 2>/dev/null || true
+elif command -v lsof &>/dev/null; then
+    lsof -ti ":$port" | xargs kill -9 2>/dev/null || true
+else
+    pkill -f "uvicorn.*$port" 2>/dev/null || true
+fi
+sleep 1
+
 printf "  │  ${BOLD}Starting on http://localhost:%s${RESET}\n" "$port"
 
 nohup .venv/bin/python -m uvicorn app.main:app \
