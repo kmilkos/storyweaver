@@ -7,17 +7,24 @@ class Settings(BaseSettings):
     gemini_api_key: str = ""
     stability_api_key: str = ""
     elevenlabs_api_key: str = ""
-    projects_dir: str = "./projects"
+    projects_dir: str = ""
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
 
 settings = Settings()
 
-PROJECTS_DIR = Path(settings.projects_dir)
+BACKEND_DIR = Path(__file__).parent.parent
+
+if settings.projects_dir:
+    PROJECTS_DIR = Path(settings.projects_dir)
+    if not PROJECTS_DIR.is_absolute():
+        PROJECTS_DIR = BACKEND_DIR / PROJECTS_DIR
+else:
+    PROJECTS_DIR = BACKEND_DIR / "projects"
 PROJECTS_DIR.mkdir(parents=True, exist_ok=True)
-DB_PATH = PROJECTS_DIR.parent / "db.json"
-VOICES_DIR = Path("./voices")
+DB_PATH = BACKEND_DIR / "db.json"
+VOICES_DIR = BACKEND_DIR / "voices"
 VOICES_DIR.mkdir(parents=True, exist_ok=True)
-STATIC_DIR = Path("./static")
+STATIC_DIR = BACKEND_DIR / "static"
 STATIC_DIR.mkdir(parents=True, exist_ok=True)
