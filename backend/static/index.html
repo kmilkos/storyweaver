@@ -71,9 +71,9 @@ body { background-color: #0b1326; color: #dae2fd; }
     </div>
   </div>
   <div class="px-6 mb-8">
-    <button onclick="document.getElementById('upload-input').click()" class="w-full bg-gradient-to-r from-primary-container to-secondary-container hover:opacity-90 active:scale-95 transition-all duration-300 rounded-lg py-3 px-4 flex items-center justify-center gap-2">
-      <span class="material-symbols-outlined text-on-primary-container">add</span>
-      <span class="font-label-md text-label-md text-on-primary-container uppercase">New Project</span>
+    <button id="new-project-btn" onclick="document.getElementById('upload-input').click()" class="w-full bg-gradient-to-r from-primary-container to-secondary-container hover:opacity-90 active:scale-95 transition-all duration-300 rounded-lg py-3 px-4 flex items-center justify-center gap-2">
+      <span id="new-project-icon" class="material-symbols-outlined text-on-primary-container">add</span>
+      <span id="new-project-label" class="font-label-md text-label-md text-on-primary-container uppercase">New Project</span>
     </button>
     <input id="upload-input" type="file" accept=".txt,.pdf" class="hidden" onchange="uploadProject(this)">
   </div>
@@ -147,7 +147,7 @@ body { background-color: #0b1326; color: #dae2fd; }
         </div>
         <h4 class="font-headline-md text-headline-md text-on-surface mb-2">Start a New Vision</h4>
         <p class="font-body-sm text-body-sm text-on-surface-variant mb-6 max-w-[200px]">Import a manuscript to begin.</p>
-        <button onclick="document.getElementById('upload-input').click()" class="bg-surface-bright text-on-surface font-label-md text-label-md uppercase tracking-wide py-2 px-6 rounded hover:bg-primary-container hover:text-on-primary-container transition-colors">Create Project</button>
+        <button onclick="document.getElementById('upload-input').click()" class="bg-surface-bright text-on-surface font-label-md text-label-md uppercase tracking-wide py-2 px-6 rounded hover:bg-primary-container hover:text-on-primary-container transition-colors">Import Manuscript</button>
       </div>
     </section>
   </div>
@@ -203,19 +203,35 @@ async function loadProjects() {
   }
 }
 
+function setLoading(loading) {
+  const btn = document.getElementById('new-project-btn');
+  const icon = document.getElementById('new-project-icon');
+  const label = document.getElementById('new-project-label');
+  btn.disabled = loading;
+  btn.style.opacity = loading ? '0.7' : '1';
+  icon.textContent = loading ? 'hourglass_top' : 'add';
+  label.textContent = loading ? 'Uploading...' : 'New Project';
+}
+
 async function uploadProject(input) {
   const file = input.files[0];
   if (!file) return;
+  setLoading(true);
   const form = new FormData();
   form.append('file', file);
   try {
     const res = await fetch('/api/projects/upload', { method: 'POST', body: form });
     if (res.ok) {
       input.value = '';
-      loadProjects();
+      await loadProjects();
+    } else {
+      const err = await res.json();
+      alert('Upload failed: ' + (err.detail || res.statusText));
     }
   } catch (e) {
     alert('Upload failed. Is the backend running?');
+  } finally {
+    setLoading(false);
   }
 }
 
