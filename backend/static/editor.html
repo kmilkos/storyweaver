@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Scene Editor - StoryWeaver</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "background": "#0b1326", "surface": "#0b1326", "surface-dim": "#0b1326",
+        "surface-bright": "#31394d", "surface-container": "#171f33",
+        "surface-container-low": "#131b2e", "surface-container-lowest": "#060e20",
+        "surface-container-high": "#222a3d", "surface-container-highest": "#2d3449",
+        "surface-variant": "#2d3449", "on-surface": "#dae2fd",
+        "on-surface-variant": "#cbc3d7", "on-background": "#dae2fd",
+        "primary": "#d0bcff", "primary-container": "#6c3bd5",
+        "on-primary": "#3b0091", "on-primary-container": "#dfd1ff",
+        "primary-fixed": "#e9ddff", "primary-fixed-dim": "#d0bcff",
+        "secondary": "#fbabff", "secondary-container": "#ae05c6",
+        "tertiary": "#4fdbc8", "tertiary-container": "#006a5f",
+        "tertiary-fixed": "#71f8e4", "tertiary-fixed-dim": "#4fdbc8",
+        "error": "#ffb4ab", "error-container": "#93000a",
+        "outline": "#958ea0", "outline-variant": "#494454",
+        "inverse-primary": "#6d3cd6", "inverse-surface": "#dae2fd",
+      },
+      fontFamily: {
+        "headline-md": ["Space Grotesk"], "body-md": ["Inter"],
+        "body-sm": ["Inter"], "label-md": ["JetBrains Mono"], "label-sm": ["JetBrains Mono"],
+      },
+      fontSize: {
+        "headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+        "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+        "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "500" }],
+        "label-sm": ["10px", { lineHeight: "14px", letterSpacing: "0.05em", fontWeight: "500" }],
+      },
+      spacing: { "gutter": "24px", "stack_sm": "8px", "stack_md": "16px", "stack_lg": "32px" },
+      borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem" }
+    }
+  }
+}
+</script>
+<style>
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: rgba(208,188,255,0.05); border-radius: 9999px; }
+::-webkit-scrollbar-thumb { background: rgba(108,59,213,0.5); border-radius: 9999px; }
+.glass-panel { background: rgba(23, 31, 51, 0.5); backdrop-filter: blur(24px); border: 1px solid rgba(73, 68, 84, 0.3); }
+.glass-card { background: rgba(45, 52, 73, 0.4); backdrop-filter: blur(16px); border: 1px solid rgba(208,188,255,0.08); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
+.primary-gradient-bg { background: linear-gradient(135deg, #6c3bd5 0%, #ae05c6 100%); }
+</style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex overflow-hidden font-body-md">
+<aside class="fixed left-0 top-0 h-full w-[260px] bg-surface-container/30 backdrop-blur-xl border-r border-outline-variant/10 flex flex-col py-8 z-50">
+  <div class="px-6 mb-8 flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+    <span class="material-symbols-outlined text-primary text-[32px]">auto_awesome</span>
+    <div>
+      <h1 class="font-headline-md text-headline-md font-bold text-primary-fixed-dim tracking-tight">StoryWeaver</h1>
+      <p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Creative Studio</p>
+    </div>
+  </div>
+  <nav class="flex-1 overflow-y-auto px-2 mt-4 space-y-1">
+    <a href="/static/index.html" class="flex items-center gap-4 py-2 px-4 text-on-surface-variant rounded hover:bg-surface-bright/20 transition-all"><span class="material-symbols-outlined">dashboard</span><span class="font-body-sm text-body-sm">Dashboard</span></a>
+    <a href="/static/index.html" class="flex items-center gap-4 py-2 px-4 text-on-surface-variant rounded hover:bg-surface-bright/20 transition-all"><span class="material-symbols-outlined">folder_open</span><span class="font-body-sm text-body-sm">Projects</span></a>
+    <a href="/static/project.html?id=" class="flex items-center gap-4 py-2 px-4 text-on-surface-variant rounded hover:bg-surface-bright/20 transition-all" id="nav-project"><span class="material-symbols-outlined">person_book</span><span class="font-body-sm text-body-sm">Characters</span></a>
+    <a class="flex items-center gap-4 py-2 px-4 text-primary border-l-4 border-primary bg-primary-container/10 rounded-r transition-all"><span class="material-symbols-outlined">movie_edit</span><span class="font-body-sm text-body-sm font-medium">Scenes</span></a>
+    <a class="flex items-center gap-4 py-2 px-4 text-on-surface-variant rounded hover:bg-surface-bright/20 transition-all"><span class="material-symbols-outlined">settings</span><span class="font-body-sm text-body-sm">Settings</span></a>
+  </nav>
+  <div class="px-2 mt-auto pt-4 border-t border-outline-variant/10">
+    <a class="flex items-center gap-4 py-2 px-4 text-on-surface-variant rounded hover:bg-surface-bright/20 transition-all"><span class="material-symbols-outlined text-[20px]">help</span><span class="font-body-sm text-body-sm">Help</span></a>
+    <a class="flex items-center gap-4 py-2 px-4 text-on-surface-variant rounded hover:bg-surface-bright/20 transition-all"><span class="material-symbols-outlined text-[20px]">logout</span><span class="font-body-sm text-body-sm">Sign Out</span></a>
+  </div>
+</aside>
+
+<main class="ml-[260px] flex-1 flex flex-col h-screen relative">
+  <header class="h-[56px] w-full flex items-center justify-between px-6 border-b border-outline-variant/10 bg-surface/50 backdrop-blur-md z-40 shrink-0">
+    <div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+      <a href="/static/index.html" class="hover:text-primary transition-colors">Dashboard</a>
+      <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+      <a href="/static/project.html?id=" class="hover:text-primary transition-colors" id="breadcrumb-project">Project</a>
+      <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+      <span class="text-primary font-medium" id="breadcrumb-scene">Scene 1</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <button onclick="previewVideo()" class="primary-gradient-bg text-on-primary-fixed font-label-md text-label-md uppercase px-4 py-2 rounded hover:shadow-[0_0_15px_rgba(208,188,255,0.3)] transition-all flex items-center gap-2">
+        <span class="material-symbols-outlined text-[16px]">play_arrow</span> Preview
+      </button>
+      <button onclick="compileVideo()" class="border border-primary text-primary font-label-md text-label-md uppercase px-4 py-2 rounded hover:bg-primary/10 transition-all flex items-center gap-2">
+        <span class="material-symbols-outlined text-[16px]">download</span> Export
+      </button>
+    </div>
+  </header>
+
+  <div class="flex-1 flex overflow-hidden">
+    <div class="w-[300px] border-r border-outline-variant/10 glass-panel flex flex-col shrink-0">
+      <div class="p-4 border-b border-outline-variant/10 flex justify-between items-center bg-surface-container/20">
+        <h2 class="font-headline-md text-headline-md text-on-surface" id="scene-list-title">Scenes</h2>
+      </div>
+      <div class="flex-1 overflow-y-auto p-2 space-y-2" id="scene-list"></div>
+    </div>
+
+    <div class="flex-1 flex flex-col bg-surface-dim relative">
+      <div class="absolute inset-0 bg-primary/5 blur-[120px] pointer-events-none"></div>
+      <div class="flex-1 p-6 flex flex-col items-center justify-center min-h-0 relative z-10">
+        <div class="w-full max-w-[960px] aspect-video rounded-xl overflow-hidden glass-card relative group shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center justify-center bg-surface-container" id="preview-area">
+          <span class="material-symbols-outlined text-6xl text-outline/30" id="preview-placeholder">image</span>
+          <img id="preview-image" class="w-full h-full object-cover hidden" alt="Scene preview"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-4">
+            <div class="flex justify-end gap-2">
+              <button onclick="regenerateImage()" class="w-8 h-8 rounded-full bg-surface/50 backdrop-blur text-white flex items-center justify-center hover:bg-primary transition-colors"><span class="material-symbols-outlined text-[18px]">refresh</span></button>
+            </div>
+          </div>
+        </div>
+        <div class="w-full max-w-[960px] mt-4 bg-surface-container/40 backdrop-blur-md rounded-lg p-3 border border-outline-variant/20 flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <button onclick="selectScene(currentScene - 1)" class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">skip_previous</span></button>
+            <button class="text-on-surface hover:text-primary transition-colors" id="gen-image-btn" onclick="generateImage()"><span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">image</span></button>
+            <button onclick="selectScene(currentScene + 1)" class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">skip_next</span></button>
+            <button onclick="generateAudio()" class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">record_voice_over</span></button>
+          </div>
+          <span class="font-label-sm text-label-sm text-on-surface-variant" id="scene-counter">0 / 0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="w-[380px] border-l border-outline-variant/10 glass-panel flex flex-col shrink-0 bg-surface-container-lowest/80">
+      <div class="p-4 border-b border-outline-variant/10 flex justify-between items-center bg-surface-container/20">
+        <h2 class="font-headline-md text-headline-md text-on-surface">Scene Settings</h2>
+      </div>
+      <div class="flex-1 overflow-y-auto p-5 space-y-6">
+        <div class="space-y-2">
+          <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Narration</label>
+          <textarea id="narration-input" class="w-full h-32 bg-surface-container-low border border-outline-variant/40 rounded-lg p-3 font-body-sm text-on-surface focus:outline-none focus:border-primary resize-none" placeholder="Enter narration..."></textarea>
+          <button onclick="saveScene()" class="text-primary font-label-sm text-label-sm flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">save</span> Save</button>
+        </div>
+        <div class="h-px w-full bg-outline-variant/10"></div>
+        <div class="space-y-2">
+          <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Image Prompt</label>
+          <textarea id="prompt-input" class="w-full h-24 bg-surface-container-low border border-outline-variant/40 rounded-lg p-3 font-body-sm text-on-surface focus:outline-none focus:border-primary resize-none" placeholder="AI image prompt..."></textarea>
+        </div>
+        <div class="h-px w-full bg-outline-variant/10"></div>
+        <div class="space-y-2">
+          <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Voice</label>
+          <div class="relative">
+            <select id="voice-select" class="w-full appearance-none bg-surface-container-low border border-outline-variant/40 rounded-lg p-3 pl-10 font-body-sm text-on-surface focus:outline-none focus:border-primary cursor-pointer"></select>
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary text-[18px]">record_voice_over</span>
+            <button onclick="previewVoice()" class="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-surface-bright flex items-center justify-center hover:text-primary transition-colors border border-outline-variant/30"><span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">play_arrow</span></button>
+          </div>
+        </div>
+        <div class="space-y-2">
+          <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Camera Motion</label>
+          <select id="camera-select" class="w-full appearance-none bg-surface-container-low border border-outline-variant/40 rounded-lg p-3 pl-10 font-body-sm text-on-surface focus:outline-none focus:border-primary cursor-pointer">
+            <option value="static">Static</option>
+            <option value="slow-zoom" selected>Slow Zoom In</option>
+            <option value="slow-pan">Slow Pan</option>
+            <option value="dolly">Dolly</option>
+          </select>
+        </div>
+        <div class="h-px w-full bg-outline-variant/10"></div>
+        <div class="space-y-3">
+          <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Characters</label>
+          <div class="flex flex-wrap gap-2" id="character-tags"></div>
+        </div>
+      </div>
+      <div class="p-4 border-t border-outline-variant/10 bg-surface-container/30 backdrop-blur-md flex gap-2">
+        <button onclick="saveScene()" class="flex-1 border border-primary text-primary font-label-md text-label-md uppercase py-2.5 rounded hover:bg-primary/10 transition-colors flex items-center justify-center gap-2"><span class="material-symbols-outlined text-[18px]">save</span> Save</button>
+        <button onclick="generateImage()" class="flex-1 primary-gradient-bg text-on-primary-fixed font-label-md text-label-md uppercase py-2.5 rounded hover:shadow-[0_0_15px_rgba(208,188,255,0.3)] transition-all flex items-center justify-center gap-2"><span class="material-symbols-outlined text-[18px]">image</span> Generate</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const projectId = params.get('id');
+let scenes = [];
+let characters = [];
+let voices = [];
+let currentScene = 0;
+
+async function init() {
+  await loadVoices();
+  if (projectId) {
+    document.getElementById('nav-project').href = `/static/project.html?id=${projectId}`;
+    document.getElementById('breadcrumb-project').href = `/static/project.html?id=${projectId}`;
+    await loadScenes();
+    await loadCharacters();
+  }
+}
+
+async function loadVoices() {
+  try {
+    const r = await fetch('/api/voices');
+    voices = await r.json();
+    const sel = document.getElementById('voice-select');
+    sel.innerHTML = voices.map(v => `<option value="${v.id}">${v.name} (${v.gender} - ${v.style})</option>`).join('');
+  } catch (e) {}
+}
+
+async function loadScenes() {
+  try {
+    const r = await fetch(`/api/projects/${projectId}/scenes`);
+    scenes = await r.json();
+    renderSceneList();
+    if (scenes.length) selectScene(0);
+  } catch (e) {}
+}
+
+async function loadCharacters() {
+  try {
+    const r = await fetch(`/api/projects/${projectId}/characters`);
+    characters = await r.json();
+  } catch (e) {}
+}
+
+function renderSceneList() {
+  const list = document.getElementById('scene-list');
+  document.getElementById('scene-list-title').textContent = `${scenes.length} Scenes`;
+  list.innerHTML = scenes.map((s, i) => {
+    const active = i === currentScene ? 'bg-primary-container/10 border-primary/30 shadow-[inset_4px_0_0_0_#d0bcff]' : 'hover:bg-surface-bright/20 border-transparent';
+    const hasImage = s.image_path ? '' : 'border-dashed border-outline-variant/50';
+    return `<div class="group relative rounded-lg p-2 cursor-pointer transition-colors border flex gap-3 ${active}" onclick="selectScene(${i})">
+      <div class="w-16 h-9 rounded bg-surface-container overflow-hidden shrink-0 flex items-center justify-center ${hasImage}">
+        ${s.image_path ? `<img class="w-full h-full object-cover" src="/${s.image_path}" alt="">` : `<span class="material-symbols-outlined text-outline-variant text-[16px]">image_not_supported</span>`}
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex justify-between items-baseline">
+          <span class="font-label-md text-label-md ${active ? 'text-primary font-bold' : 'text-on-surface-variant'}">Sc. ${s.order}</span>
+          ${s.status === 'draft' ? '<span class="w-2 h-2 rounded-full bg-error inline-block"></span>' : '<span class="w-2 h-2 rounded-full bg-tertiary inline-block"></span>'}
+        </div>
+        <p class="font-body-sm text-[11px] text-on-surface-variant/70 truncate mt-1">${s.narration.slice(0, 50)}${s.narration.length > 50 ? '...' : ''}</p>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function selectScene(index) {
+  if (index < 0 || index >= scenes.length) return;
+  currentScene = index;
+  const s = scenes[index];
+  document.getElementById('breadcrumb-scene').textContent = `Scene ${s.order}`;
+  document.getElementById('scene-counter').textContent = `${index + 1} / ${scenes.length}`;
+  document.getElementById('narration-input').value = s.narration || '';
+  document.getElementById('prompt-input').value = s.image_prompt || '';
+  document.getElementById('voice-select').value = s.voice_id || 'kore';
+  document.getElementById('camera-select').value = s.camera_motion || 'slow-zoom';
+
+  const img = document.getElementById('preview-image');
+  const placeholder = document.getElementById('preview-placeholder');
+  if (s.image_path) {
+    img.src = '/' + s.image_path;
+    img.classList.remove('hidden');
+    placeholder.classList.add('hidden');
+  } else {
+    img.classList.add('hidden');
+    placeholder.classList.remove('hidden');
+  }
+
+  renderCharacterTags(s);
+  renderSceneList();
+}
+
+function renderCharacterTags(scene) {
+  const tags = document.getElementById('character-tags');
+  const sceneCharIds = scene.character_ids || [];
+  const sceneChars = characters.filter(c => sceneCharIds.includes(c.id));
+  tags.innerHTML = sceneChars.map(c =>
+    `<div class="flex items-center gap-1 bg-surface-bright/50 border border-outline-variant/30 px-3 py-1.5 rounded-full backdrop-blur-sm">
+      <span class="font-label-sm text-label-sm text-on-surface">${c.name}</span>
+    </div>`
+  ).join('');
+  if (!sceneChars.length) tags.innerHTML = '<span class="font-body-sm text-body-sm text-on-surface-variant">No characters in this scene</span>';
+}
+
+async function saveScene() {
+  const s = scenes[currentScene];
+  const body = {
+    narration: document.getElementById('narration-input').value,
+    image_prompt: document.getElementById('prompt-input').value,
+    voice_id: document.getElementById('voice-select').value,
+    camera_motion: document.getElementById('camera-select').value,
+  };
+  try {
+    await fetch(`/api/projects/${projectId}/scenes/${s.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    Object.assign(s, body);
+  } catch (e) {}
+}
+
+async function generateImage() {
+  const s = scenes[currentScene];
+  await saveScene();
+  try {
+    const r = await fetch(`/api/projects/${projectId}/scenes/${s.id}/generate-image`, { method: 'POST' });
+    if (!r.ok) { const e = await r.json(); alert(e.detail || 'Generation failed'); return; }
+    const data = await r.json();
+    s.image_path = data.image_path;
+    s.status = 'image_generated';
+    selectScene(currentScene);
+  } catch (e) { alert('Image generation failed. Check API key.'); }
+}
+
+async function regenerateImage() {
+  scenes[currentScene].image_path = '';
+  await generateImage();
+}
+
+async function generateAudio() {
+  const s = scenes[currentScene];
+  await saveScene();
+  try {
+    const r = await fetch(`/api/projects/${projectId}/scenes/${s.id}/generate-audio`, { method: 'POST' });
+    if (!r.ok) { const e = await r.json(); alert(e.detail || 'Generation failed'); return; }
+    const data = await r.json();
+    s.audio_path = data.audio_path;
+    s.status = 'audio_generated';
+  } catch (e) { alert('Audio generation failed. Check API key.'); }
+}
+
+function previewVoice() {
+  const voiceId = document.getElementById('voice-select').value;
+  const text = document.getElementById('narration-input').value || 'This is a sample of my voice.';
+  try {
+    const r = await fetch('/api/voices/preview', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, voice_id: voiceId })
+    });
+    if (r.ok) {
+      const blob = await r.blob();
+      const url = URL.createObjectURL(blob);
+      new Audio(url).play();
+    }
+  } catch (e) {}
+}
+
+async function previewVideo() {
+  try {
+    const r = await fetch(`/api/projects/${projectId}/export/preview`, { method: 'POST' });
+    if (!r.ok) { const e = await r.json(); alert(e.detail || 'Preview failed'); return; }
+    const data = await r.json();
+    window.open(data.url, '_blank');
+  } catch (e) { alert('Preview failed. Need images + audio.'); }
+}
+
+async function compileVideo() {
+  try {
+    const r = await fetch(`/api/projects/${projectId}/export/compile`, { method: 'POST' });
+    if (!r.ok) { const e = await r.json(); alert(e.detail || 'Compile failed'); return; }
+    const data = await r.json();
+    window.open(data.url, '_blank');
+  } catch (e) { alert('Compile failed.'); }
+}
+
+init();
+</script>
+</body>
+</html>

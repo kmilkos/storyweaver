@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>StoryWeaver - Project</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "background": "#0b1326", "surface": "#0b1326", "surface-dim": "#0b1326",
+        "surface-bright": "#31394d", "surface-container": "#171f33",
+        "surface-container-low": "#131b2e", "surface-container-lowest": "#060e20",
+        "surface-container-high": "#222a3d", "surface-container-highest": "#2d3449",
+        "surface-variant": "#2d3449", "on-surface": "#dae2fd",
+        "on-surface-variant": "#cbc3d7", "on-background": "#dae2fd",
+        "primary": "#d0bcff", "primary-container": "#6c3bd5",
+        "on-primary": "#3b0091", "on-primary-container": "#dfd1ff",
+        "primary-fixed": "#e9ddff", "primary-fixed-dim": "#d0bcff",
+        "secondary": "#fbabff", "secondary-container": "#ae05c6",
+        "tertiary": "#4fdbc8", "tertiary-container": "#006a5f",
+        "tertiary-fixed": "#71f8e4", "tertiary-fixed-dim": "#4fdbc8",
+        "error": "#ffb4ab", "error-container": "#93000a",
+        "outline": "#958ea0", "outline-variant": "#494454",
+        "inverse-primary": "#6d3cd6", "inverse-surface": "#dae2fd",
+      },
+      fontFamily: {
+        "display-md": ["Space Grotesk"], "headline-md": ["Space Grotesk"],
+        "body-md": ["Inter"], "body-sm": ["Inter"], "body-lg": ["Inter"],
+        "label-md": ["JetBrains Mono"], "label-sm": ["JetBrains Mono"],
+      },
+      fontSize: {
+        "display-md": ["48px", { lineHeight: "56px", letterSpacing: "-0.01em", fontWeight: "700" }],
+        "headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+        "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+        "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+        "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "500" }],
+        "label-sm": ["10px", { lineHeight: "14px", letterSpacing: "0.05em", fontWeight: "500" }],
+      },
+      spacing: { "gutter": "24px", "stack_sm": "8px", "stack_md": "16px", "stack_lg": "32px" },
+      borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem" }
+    }
+  }
+}
+</script>
+<style>
+body { background-color: #0b1326; color: #dae2fd; }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: rgba(108, 59, 213, 0.1); border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(208, 188, 255, 0.3); border-radius: 4px; }
+</style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md overflow-x-hidden">
+<nav class="fixed left-0 top-0 h-full w-[260px] bg-surface-container/30 backdrop-blur-xl border-r border-outline-variant/10 flex flex-col py-8 z-50">
+  <div class="px-6 mb-8 flex items-center gap-2">
+    <span class="material-symbols-outlined text-primary-fixed-dim" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+    <div class="font-headline-md text-headline-md font-bold text-primary-fixed-dim tracking-tight">StoryWeaver</div>
+  </div>
+  <div class="px-6 mb-8 text-on-surface-variant font-label-md text-label-md">Creative Studio</div>
+  <div class="flex flex-col flex-1 gap-1 px-2">
+    <a href="/static/index.html" class="flex items-center gap-4 py-2 px-4 text-on-surface-variant hover:bg-surface-bright/20 transition-all rounded-lg"><span class="material-symbols-outlined">dashboard</span><span class="font-body-md text-body-md">Dashboard</span></a>
+    <a href="/static/index.html" class="flex items-center gap-4 py-2 px-4 text-primary border-l-4 border-primary bg-primary-container/10 rounded-r-lg"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">folder_open</span><span class="font-body-md text-body-md font-bold">Projects</span></a>
+    <a class="flex items-center gap-4 py-2 px-4 text-on-surface-variant hover:bg-surface-bright/20 transition-all rounded-lg"><span class="material-symbols-outlined">person_book</span><span class="font-body-md text-body-md">Characters</span></a>
+    <a class="flex items-center gap-4 py-2 px-4 text-on-surface-variant hover:bg-surface-bright/20 transition-all rounded-lg"><span class="material-symbols-outlined">movie_edit</span><span class="font-body-md text-body-md">Scenes</span></a>
+    <a class="flex items-center gap-4 py-2 px-4 text-on-surface-variant hover:bg-surface-bright/20 transition-all rounded-lg"><span class="material-symbols-outlined">settings</span><span class="font-body-md text-body-md">Settings</span></a>
+  </div>
+  <div class="flex flex-col mt-auto pt-8 px-2 gap-1 border-t border-outline-variant/10 mx-6">
+    <a class="flex items-center gap-4 py-2 px-4 text-on-surface-variant hover:bg-surface-bright/20 transition-all rounded-lg"><span class="material-symbols-outlined">help</span><span class="font-label-md text-label-md">Help</span></a>
+    <a class="flex items-center gap-4 py-2 px-4 text-error hover:bg-error-container/20 transition-all rounded-lg"><span class="material-symbols-outlined">logout</span><span class="font-label-md text-label-md">Sign Out</span></a>
+  </div>
+</nav>
+
+<header class="fixed top-0 right-0 h-[56px] w-[calc(100%-260px)] bg-surface-container/30 backdrop-blur-xl border-b border-outline-variant/10 flex justify-between items-center px-6 z-40">
+  <div class="flex items-center gap-4">
+    <div class="flex items-center text-on-surface-variant font-label-md text-label-md gap-2">
+      <a href="/static/index.html" class="hover:text-primary cursor-pointer transition-colors">Novel Overview</a>
+      <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+      <span class="text-primary font-bold border-b-2 border-primary pb-1" id="project-title-nav">Loading...</span>
+    </div>
+  </div>
+  <div class="flex items-center gap-8 h-full">
+    <nav class="hidden md:flex items-center gap-8 h-full">
+      <a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors cursor-pointer flex items-center h-full">Drafts</a>
+      <a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors cursor-pointer flex items-center h-full">Archive</a>
+      <a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors cursor-pointer flex items-center h-full">Shared</a>
+    </nav>
+    <div class="flex items-center gap-2">
+      <button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-bright/20"><span class="material-symbols-outlined">notifications</span></button>
+      <button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-bright/20"><span class="material-symbols-outlined">search</span></button>
+      <div class="w-8 h-8 rounded-full ml-2 overflow-hidden border border-outline-variant"></div>
+    </div>
+  </div>
+</header>
+
+<main class="ml-[260px] pt-[56px] min-h-screen p-10">
+  <div class="max-w-[1440px] mx-auto">
+    <div class="mb-8 flex justify-between items-end" id="project-header">
+      <div>
+        <h1 class="font-display-md text-display-md text-primary-fixed-dim mb-2" id="project-title">Loading...</h1>
+        <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl" id="project-author"></p>
+      </div>
+      <div class="flex gap-2" id="project-actions">
+        <button onclick="extractCharacters()" class="px-4 py-2 border border-primary text-primary font-label-md text-label-md uppercase rounded-lg hover:bg-primary/10 transition-colors flex items-center gap-2">
+          <span class="material-symbols-outlined text-[16px]">person_search</span> Extract Characters
+        </button>
+        <button onclick="splitScenes()" class="px-4 py-2 bg-gradient-to-r from-primary-container to-secondary-container text-on-primary-container font-label-md text-label-md uppercase rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2">
+          <span class="material-symbols-outlined text-[16px]">auto_stories</span> Split Scenes
+        </button>
+        <a id="editor-link" href="#" class="px-4 py-2 bg-gradient-to-r from-primary-container to-secondary-container text-on-primary-container font-label-md text-label-md uppercase rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2 hidden">
+          <span class="material-symbols-outlined text-[16px]">movie_edit</span> Open Editor
+        </a>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div class="lg:col-span-7 flex flex-col gap-6">
+        <div class="bg-surface-container/50 backdrop-blur-xl border border-outline-variant/20 rounded-xl p-6 shadow-[0_40px_80px_rgba(0,0,0,0.5)]">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="font-headline-md text-headline-md text-on-surface">Manuscript</h2>
+            <span class="font-label-md text-label-md text-tertiary-fixed-dim bg-tertiary-container/30 px-3 py-1 rounded-full" id="status-badge">Draft</span>
+          </div>
+          <div class="flex flex-col gap-2" id="chapter-list">
+            <div class="text-on-surface-variant font-body-sm text-body-sm p-4 text-center">No chapters yet. Upload a file and split scenes.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-5 flex flex-col gap-6">
+        <div class="bg-surface-container-high/40 backdrop-blur-md border border-outline-variant/10 rounded-xl p-6 relative overflow-hidden">
+          <div class="absolute -top-20 -right-20 w-64 h-64 bg-primary/10 rounded-full blur-[80px] pointer-events-none"></div>
+          <div class="flex justify-between items-center mb-4 relative z-10">
+            <h2 class="font-headline-md text-headline-md text-on-surface">Character Bank</h2>
+            <span class="font-label-md text-label-md text-on-surface-variant" id="char-count">0</span>
+          </div>
+          <div class="flex flex-col gap-4 relative z-10" id="character-list">
+            <div class="text-on-surface-variant font-body-sm text-body-sm p-4 text-center">No characters yet. Click "Extract Characters" to scan the novel.</div>
+          </div>
+          <div class="mt-4 text-center relative z-10">
+            <a class="font-label-md text-label-md text-primary hover:text-primary-fixed transition-colors inline-flex items-center gap-1 cursor-pointer" onclick="document.getElementById('char-name-input').value='';document.getElementById('char-desc-input').value='';document.getElementById('char-modal').classList.remove('hidden')">
+              <span class="material-symbols-outlined text-[16px]">add</span> Add Character Manually
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="char-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center">
+  <div class="bg-surface-container-high border border-outline-variant/20 rounded-xl p-6 w-full max-w-md">
+    <h3 class="font-headline-md text-headline-md text-on-surface mb-4">Add Character</h3>
+    <div class="space-y-3">
+      <input id="char-name-input" class="w-full bg-surface-container border border-outline-variant/40 rounded-lg p-3 font-body-sm text-on-surface focus:outline-none focus:border-primary" placeholder="Name">
+      <textarea id="char-desc-input" class="w-full bg-surface-container border border-outline-variant/40 rounded-lg p-3 font-body-sm text-on-surface focus:outline-none focus:border-primary h-24" placeholder="Description"></textarea>
+      <select id="char-role-input" class="w-full bg-surface-container border border-outline-variant/40 rounded-lg p-3 font-body-sm text-on-surface focus:outline-none focus:border-primary">
+        <option value="protagonist">Protagonist</option>
+        <option value="antagonist">Antagonist</option>
+        <option value="supporting">Supporting</option>
+        <option value="minor">Minor</option>
+      </select>
+    </div>
+    <div class="flex justify-end gap-2 mt-4">
+      <button onclick="document.getElementById('char-modal').classList.add('hidden')" class="px-4 py-2 border border-outline-variant text-on-surface-variant font-label-md text-label-md rounded-lg">Cancel</button>
+      <button onclick="addCharacter()" class="px-4 py-2 bg-primary-container text-on-primary-container font-label-md text-label-md rounded-lg">Add</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const projectId = params.get('id');
+let project = null;
+
+async function loadProject() {
+  if (!projectId) { document.getElementById('project-title').textContent = 'No project ID'; return; }
+  try {
+    const r = await fetch(`/api/projects/${projectId}`);
+    project = await r.json();
+    document.getElementById('project-title').textContent = project.title;
+    document.getElementById('project-title-nav').textContent = project.title;
+    document.getElementById('project-author').textContent = `${project.author || 'Unknown author'} · ${project.chapters.length} chapters`;
+    document.getElementById('status-badge').textContent = project.status.replace(/_/g, ' ');
+
+    const ch = document.getElementById('chapter-list');
+    if (project.chapters.length) {
+      ch.innerHTML = project.chapters.map(c => `
+        <div class="group p-4 rounded-lg hover:bg-surface-bright/30 transition-colors border border-transparent hover:border-outline-variant/30 cursor-pointer">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-headline-md text-headline-md text-primary-fixed text-lg">${c.title}</h3>
+          </div>
+        </div>`).join('');
+    }
+
+    const scenesRes = await fetch(`/api/projects/${projectId}/scenes`);
+    const scenes = await scenesRes.json();
+    if (scenes.length) {
+      document.getElementById('editor-link').classList.remove('hidden');
+      document.getElementById('editor-link').href = `/static/editor.html?id=${projectId}`;
+    }
+
+    loadCharacters();
+  } catch (e) {
+    document.getElementById('project-title').textContent = 'Failed to load project';
+  }
+}
+
+async function loadCharacters() {
+  try {
+    const r = await fetch(`/api/projects/${projectId}/characters`);
+    const chars = await r.json();
+    document.getElementById('char-count').textContent = `${chars.length} character${chars.length !== 1 ? 's' : ''}`;
+    const list = document.getElementById('character-list');
+    if (!chars.length) return;
+    const roleColors = { protagonist: 'text-tertiary-fixed-dim bg-tertiary-container/30 border-tertiary/20', antagonist: 'text-error bg-error-container/30 border-error/20', supporting: 'text-secondary bg-secondary/10 border-secondary/20', minor: 'text-on-surface-variant bg-surface-bright/50 border-outline-variant/30' };
+    list.innerHTML = chars.map(c => `
+      <div class="bg-surface-container/60 border border-outline-variant/20 rounded-lg p-4 flex gap-4 hover:border-primary/50 transition-colors group">
+        <div class="w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-surface-bright flex items-center justify-center">
+          <span class="material-symbols-outlined text-3xl text-primary">person</span>
+        </div>
+        <div class="flex-1">
+          <div class="flex justify-between items-start">
+            <h3 class="font-headline-md text-headline-md text-primary-fixed text-lg">${c.name}</h3>
+            <span class="font-label-sm text-label-sm px-2 py-0.5 rounded border ${roleColors[c.role] || roleColors.supporting}">${c.role}</span>
+          </div>
+          <p class="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">${c.description || 'No description'}</p>
+        </div>
+      </div>`).join('');
+  } catch (e) {}
+}
+
+async function extractCharacters() {
+  try {
+    const r = await fetch(`/api/projects/${projectId}/characters/extract`, { method: 'POST' });
+    if (!r.ok) { const e = await r.json(); alert(e.detail || 'Extraction failed'); return; }
+    loadProject();
+  } catch (e) { alert('Failed. Is GEMINI_API_KEY set?'); }
+}
+
+async function splitScenes() {
+  try {
+    const r = await fetch(`/api/projects/${projectId}/scenes/split`, { method: 'POST' });
+    if (!r.ok) { const e = await r.json(); alert(e.detail || 'Split failed'); return; }
+    loadProject();
+  } catch (e) { alert('Failed. Is GEMINI_API_KEY set?'); }
+}
+
+async function addCharacter() {
+  const name = document.getElementById('char-name-input').value;
+  const desc = document.getElementById('char-desc-input').value;
+  const role = document.getElementById('char-role-input').value;
+  if (!name) return;
+  await fetch(`/api/projects/${projectId}/characters`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, description: desc, role })
+  });
+  document.getElementById('char-modal').classList.add('hidden');
+  loadCharacters();
+}
+
+loadProject();
+</script>
+</body>
+</html>

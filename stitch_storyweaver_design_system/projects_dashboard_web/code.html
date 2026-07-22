@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>StoryWeaver - Projects Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&amp;family=Inter:wght@400&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#4fdbc8",
+                        "on-secondary": "#580065",
+                        "tertiary-fixed": "#71f8e4",
+                        "on-background": "#dae2fd",
+                        "background": "#0b1326",
+                        "surface-bright": "#31394d",
+                        "on-surface-variant": "#cbc3d7",
+                        "error": "#ffb4ab",
+                        "outline-variant": "#494454",
+                        "primary-container": "#6c3bd5",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed": "#23005c",
+                        "secondary": "#fbabff",
+                        "surface-container-low": "#131b2e",
+                        "on-surface": "#dae2fd",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#36003e",
+                        "inverse-on-surface": "#283044",
+                        "surface-container-lowest": "#060e20",
+                        "secondary-container": "#ae05c6",
+                        "tertiary-container": "#006a5f",
+                        "primary": "#d0bcff",
+                        "on-primary-fixed-variant": "#5418bd",
+                        "surface-container-high": "#222a3d",
+                        "secondary-fixed-dim": "#fbabff",
+                        "on-tertiary-container": "#64edd9",
+                        "surface-container": "#171f33",
+                        "surface": "#0b1326",
+                        "on-tertiary": "#003731",
+                        "primary-fixed": "#e9ddff",
+                        "secondary-fixed": "#ffd6fd",
+                        "on-tertiary-fixed-variant": "#005048",
+                        "on-primary": "#3b0091",
+                        "surface-variant": "#2d3449",
+                        "outline": "#958ea0",
+                        "surface-dim": "#0b1326",
+                        "error-container": "#93000a",
+                        "surface-container-highest": "#2d3449",
+                        "on-secondary-fixed-variant": "#7c008e",
+                        "surface-tint": "#d0bcff",
+                        "on-tertiary-fixed": "#00201c",
+                        "on-primary-container": "#dfd1ff",
+                        "inverse-primary": "#6d3cd6",
+                        "tertiary": "#4fdbc8",
+                        "inverse-surface": "#dae2fd",
+                        "primary-fixed-dim": "#d0bcff",
+                        "on-secondary-container": "#ffd8fd"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sidebar_width": "260px",
+                        "stack_lg": "32px",
+                        "stack_sm": "8px",
+                        "topbar_height": "56px",
+                        "gutter": "24px",
+                        "margin_desktop": "40px",
+                        "stack_md": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Space Grotesk"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Space Grotesk"],
+                        "headline-md": ["Space Grotesk"],
+                        "display-md": ["Space Grotesk"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "body-sm": ["Inter"],
+                        "label-md": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "display-lg": ["64px", { "lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-md": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0b1326; /* match surface/background */
+            color: #dae2fd; /* match on-surface */
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, rgba(108,59,213,0.2) 0%, rgba(174,5,198,0.2) 100%);
+            background-size: 200% 200%;
+            animation: gradient-shift 10s ease infinite;
+        }
+
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 40px rgba(208, 188, 255, 0.05); /* Primary tinted glow */
+        }
+
+        /* WebKit Scrollbar customization */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(11, 19, 38, 0.8);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(108, 59, 213, 0.4);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(108, 59, 213, 0.6);
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md antialiased overflow-hidden flex h-screen w-full">
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-0 h-full w-[260px] bg-surface-container-low/30 backdrop-blur-xl border-r border-outline-variant/10 shadow-[0_0_40px_rgba(208,188,255,0.1)] flex flex-col py-margin_desktop z-50">
+<!-- Brand Header -->
+<div class="px-gutter mb-stack_lg flex items-center gap-stack_sm">
+<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary-fixed-dim tracking-tight">StoryWeaver</h1>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase opacity-70">Creative Studio</p>
+</div>
+</div>
+<!-- CTA -->
+<div class="px-gutter mb-stack_lg">
+<button class="w-full bg-gradient-to-r from-primary-container to-secondary-container hover:opacity-90 active:scale-95 transition-all duration-300 rounded-lg py-3 px-4 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-on-primary-container">add</span>
+<span class="font-label-md text-label-md text-on-primary-container uppercase">New Project</span>
+</button>
+</div>
+<!-- Main Nav Tabs -->
+<div class="flex-1 overflow-y-auto px-2 space-y-1">
+<a class="flex items-center gap-stack_md py-stack_sm px-4 rounded-lg text-on-surface-variant hover:bg-surface-bright/20 hover:backdrop-blur-2xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-stack_md py-stack_sm px-4 rounded-lg text-primary border-l-4 border-primary bg-primary-container/10" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">folder_open</span>
+<span class="font-body-md text-body-md font-medium">Projects</span>
+</a>
+<a class="flex items-center gap-stack_md py-stack_sm px-4 rounded-lg text-on-surface-variant hover:bg-surface-bright/20 hover:backdrop-blur-2xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">person_book</span>
+<span class="font-body-md text-body-md">Characters</span>
+</a>
+<a class="flex items-center gap-stack_md py-stack_sm px-4 rounded-lg text-on-surface-variant hover:bg-surface-bright/20 hover:backdrop-blur-2xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">movie_edit</span>
+<span class="font-body-md text-body-md">Scenes</span>
+</a>
+<a class="flex items-center gap-stack_md py-stack_sm px-4 rounded-lg text-on-surface-variant hover:bg-surface-bright/20 hover:backdrop-blur-2xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</div>
+<!-- Footer Nav Tabs -->
+<div class="px-2 mt-auto space-y-1 pt-stack_md border-t border-outline-variant/10">
+<a class="flex items-center gap-stack_md py-stack_sm px-4 rounded-lg text-on-surface-variant hover:bg-surface-bright/20 hover:backdrop-blur-2xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body-md text-body-md">Help</span>
+</a>
+<a class="flex items-center gap-stack_md py-stack_sm px-4 rounded-lg text-error/80 hover:text-error hover:bg-surface-bright/20 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-body-md text-body-md">Sign Out</span>
+</a>
+</div>
+</nav>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 h-[56px] w-[calc(100%-260px)] bg-surface-container-low/30 backdrop-blur-xl border-b border-outline-variant/10 z-40 flex justify-between items-center px-gutter">
+<!-- Search / Breadcrumbs (Simulated) -->
+<div class="flex items-center gap-stack_md w-1/3">
+<div class="relative w-full group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full bg-surface-variant/50 border border-outline-variant rounded-full py-1.5 pl-10 pr-4 font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:bg-surface-container-lowest/50 transition-all" placeholder="Search projects..." type="text"/>
+</div>
+</div>
+<!-- Navigation Links (Center-ish) -->
+<div class="hidden lg:flex items-center gap-stack_lg">
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200 cursor-pointer active:opacity-70" href="#">Drafts</a>
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200 cursor-pointer active:opacity-70" href="#">Archive</a>
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200 cursor-pointer active:opacity-70" href="#">Shared</a>
+</div>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-stack_sm">
+<button class="p-2 rounded-full text-on-surface-variant hover:bg-surface-bright/30 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full border border-outline-variant overflow-hidden ml-2 cursor-pointer hover:border-primary transition-colors">
+<img alt="Current user avatar" class="w-full h-full object-cover" data-alt="A highly detailed close-up portrait of a digital avatar, bathed in moody cinematic neon lighting against a dark background, reflecting a sophisticated, minimalist sci-fi aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAe-eFSOO81YMZqrCDExSxYuuSTadteOoHx3_IREZWZvYbBAvoJXFjGWIyfStrKz54FlsfHi5iovM_gnogETpnBGvZYjpPx_cwonatBySURrPNM9Lycp7k-BfYnwhF2KKNYIKQJFoxeHl0lR2l-5bj_-LGY_VXLbiiLD3wXyKJV6pVAhpfI1Qok2Zp6Hq--xkih3Qwi3C6nHkHJ3WUPRCdmy4Znpb9c8rVLdMXupL-8FrBlBl-b7vbQ"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[260px] mt-[56px] w-[calc(100%-260px)] h-[calc(100vh-56px)] overflow-y-auto overflow-x-hidden relative">
+<!-- Content Container -->
+<div class="max-w-[1440px] mx-auto px-gutter py-margin_desktop pb-[120px] flex flex-col gap-stack_lg">
+<!-- Hero Banner -->
+<section class="relative w-full rounded-2xl overflow-hidden glass-card hero-gradient p-10 flex flex-col justify-end min-h-[280px] border border-outline-variant/20">
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/80 to-transparent z-0"></div>
+<div class="relative z-10 max-w-2xl">
+<h2 class="font-display-md text-display-md text-on-surface mb-2">Turn pages into cinema.</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant opacity-80">Your projects workspace. Orchestrate narratives with high-fidelity precision.</p>
+</div>
+</section>
+<!-- Projects Grid Header -->
+<div class="flex items-center justify-between mt-4">
+<h3 class="font-headline-md text-headline-md text-on-surface">Active Projects</h3>
+<div class="flex items-center gap-2">
+<button class="p-1 rounded text-on-surface-variant hover:text-primary hover:bg-surface-bright/20"><span class="material-symbols-outlined">grid_view</span></button>
+<button class="p-1 rounded text-outline hover:text-primary hover:bg-surface-bright/20"><span class="material-symbols-outlined">view_list</span></button>
+</div>
+</div>
+<!-- Bento/Card Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-gutter">
+<!-- Card 1: The Last Ember -->
+<div class="glass-card rounded-xl overflow-hidden group hover:-translate-y-1 transition-transform duration-300 flex flex-col">
+<div class="w-full aspect-video relative overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500 group-hover:scale-105" data-alt="A breathtaking, cinematic wide shot of a ruined futuristic city at dusk, glowing with sparse, dying ember-orange lights against deep slate and violet shadows, conveying a sense of melancholic hope in a dark, minimalist style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1jdviqHwFZR4mVwvvGEFclFmHHTFZp98gGUTg4AI7Nk1nLLaLBb9iKTjjfltvMFkfrCk-T1Z9cWeA-9uX5K08_4dk7LCwzlTc7xtqHyy_RndF8tJHBKBqY8r9BxDHDvYgSF_uwJVTuVk7CevjSm36_Jv6bjEA32eAVhdhWRw3PiMVzMS_WRYdriP7T2fkHewu95JCthEmpZOSslKnVWlfKD_DYns9_Dacm5o7dGuvXeQdwiPPQCZs"/>
+<div class="absolute top-3 right-3">
+<span class="bg-surface-container-low/80 backdrop-blur px-2 py-1 rounded font-label-sm text-label-sm text-primary uppercase border border-primary/20">Draft</span>
+</div>
+</div>
+<div class="p-6 flex flex-col flex-1 gap-4">
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-1 group-hover:text-primary-fixed-dim transition-colors">The Last Ember</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">A post-apocalyptic thriller following a rogue AI archivist seeking the last uncorrupted human memories.</p>
+</div>
+<div class="mt-auto pt-4 space-y-2">
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant uppercase">
+<span>Worldbuilding</span>
+<span>65%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-bright rounded-full overflow-hidden">
+<div class="h-full bg-primary-container rounded-full w-[65%]"></div>
+</div>
+</div>
+<button class="w-full mt-2 py-2 px-4 rounded border border-primary/30 text-primary font-label-md text-label-md uppercase tracking-wider hover:bg-primary-container/10 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">edit_document</span>
+                            Open Editor
+                        </button>
+</div>
+</div>
+<!-- Card 2: Neon Whispers -->
+<div class="glass-card rounded-xl overflow-hidden group hover:-translate-y-1 transition-transform duration-300 flex flex-col">
+<div class="w-full aspect-video relative overflow-hidden bg-surface-container">
+<div class="absolute inset-0 bg-gradient-to-br from-tertiary-container/30 to-surface-container z-10"></div>
+<img class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500 group-hover:scale-105" data-alt="A slick, rain-slicked cyberpunk alleyway illuminated by vibrant cyan and fuchsia neon signs, reflecting off dark wet pavement. High-contrast, moody atmosphere fitting a neo-noir detective aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6-mrOXg1PT-j_Cgk9MkGiDHbO0dLuBAAlF0nnrn8ppc1VyXnzSnlN5XxYiMuIOFctpE5LE_nwKGxQZZM0IARsw3WIR_VS2hjpvF8imtjLsrAjRTlN-OtCfNpVbwlzJ-hvLxfYlNHEMRiPvrG8fd8bzoa8z5V0XrzRa2d8JvcSKRxxJT_ZGIfZ8o2TrjM1s5vZd8fHIvK-BgsH0osOeErurBP3RdeSHOt0F66njPD5e4-7k-xZQY9i"/>
+<div class="absolute top-3 right-3 z-20">
+<span class="bg-surface-container-low/80 backdrop-blur px-2 py-1 rounded font-label-sm text-label-sm text-tertiary uppercase border border-tertiary/20">Review</span>
+</div>
+</div>
+<div class="p-6 flex flex-col flex-1 gap-4">
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-1 group-hover:text-tertiary transition-colors">Neon Whispers</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Detective Vance navigates a labyrinth of digital ghosts in sector 4's underground data markets.</p>
+</div>
+<div class="mt-auto pt-4 space-y-2">
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant uppercase">
+<span>Scene 4: The Drop</span>
+<span>90%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-bright rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-container rounded-full w-[90%] shadow-[0_0_10px_#006a5f]"></div>
+</div>
+</div>
+<button class="w-full mt-2 py-2 px-4 rounded border border-outline-variant text-on-surface-variant font-label-md text-label-md uppercase tracking-wider hover:border-tertiary hover:text-tertiary hover:bg-tertiary/5 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">visibility</span>
+                            Review Draft
+                        </button>
+</div>
+</div>
+<!-- Card 3: Empty State / New Vision -->
+<div class="glass-card rounded-xl overflow-hidden border-dashed border-2 border-outline-variant/40 hover:border-primary/50 transition-colors duration-300 flex flex-col items-center justify-center min-h-[380px] p-8 text-center cursor-pointer group bg-surface-container-lowest/50 hover:bg-surface-container-low/50">
+<div class="w-16 h-16 rounded-full bg-surface-bright/30 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-primary-container/20 transition-all duration-500">
+<span class="material-symbols-outlined text-4xl text-outline group-hover:text-primary transition-colors">magic_button</span>
+</div>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-2">Start a New Vision</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6 max-w-[200px]">Begin plotting a new narrative universe or import an existing manuscript.</p>
+<button class="bg-surface-bright text-on-surface font-label-md text-label-md uppercase tracking-wide py-2 px-6 rounded hover:bg-primary-container hover:text-on-primary-container transition-colors">
+                        Create Project
+                    </button>
+</div>
+</section>
+</div>
+</main>
+</body></html>

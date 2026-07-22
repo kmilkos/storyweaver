@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>StoryWeaver - The Last Ember</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#4fdbc8",
+                        "on-secondary": "#580065",
+                        "tertiary-fixed": "#71f8e4",
+                        "on-background": "#dae2fd",
+                        "background": "#0b1326",
+                        "surface-bright": "#31394d",
+                        "on-surface-variant": "#cbc3d7",
+                        "error": "#ffb4ab",
+                        "outline-variant": "#494454",
+                        "primary-container": "#6c3bd5",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed": "#23005c",
+                        "secondary": "#fbabff",
+                        "surface-container-low": "#131b2e",
+                        "on-surface": "#dae2fd",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#36003e",
+                        "inverse-on-surface": "#283044",
+                        "surface-container-lowest": "#060e20",
+                        "secondary-container": "#ae05c6",
+                        "tertiary-container": "#006a5f",
+                        "primary": "#d0bcff",
+                        "on-primary-fixed-variant": "#5418bd",
+                        "surface-container-high": "#222a3d",
+                        "secondary-fixed-dim": "#fbabff",
+                        "on-tertiary-container": "#64edd9",
+                        "surface-container": "#171f33",
+                        "surface": "#0b1326",
+                        "on-tertiary": "#003731",
+                        "primary-fixed": "#e9ddff",
+                        "secondary-fixed": "#ffd6fd",
+                        "on-tertiary-fixed-variant": "#005048",
+                        "on-primary": "#3b0091",
+                        "surface-variant": "#2d3449",
+                        "outline": "#958ea0",
+                        "surface-dim": "#0b1326",
+                        "error-container": "#93000a",
+                        "surface-container-highest": "#2d3449",
+                        "on-secondary-fixed-variant": "#7c008e",
+                        "surface-tint": "#d0bcff",
+                        "on-tertiary-fixed": "#00201c",
+                        "on-primary-container": "#dfd1ff",
+                        "inverse-primary": "#6d3cd6",
+                        "tertiary": "#4fdbc8",
+                        "inverse-surface": "#dae2fd",
+                        "primary-fixed-dim": "#d0bcff",
+                        "on-secondary-container": "#ffd8fd"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sidebar_width": "260px",
+                        "stack_lg": "32px",
+                        "stack_sm": "8px",
+                        "topbar_height": "56px",
+                        "gutter": "24px",
+                        "margin_desktop": "40px",
+                        "stack_md": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Space Grotesk"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Space Grotesk"],
+                        "headline-md": ["Space Grotesk"],
+                        "display-md": ["Space Grotesk"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "body-sm": ["Inter"],
+                        "label-md": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "display-lg": ["64px", { "lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-md": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #0b1326;
+            color: #dae2fd;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(108, 59, 213, 0.1); 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(208, 188, 255, 0.3); 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(208, 188, 255, 0.5); 
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md overflow-x-hidden">
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-0 h-full w-[260px] bg-surface-container/30 dark:bg-surface-container-low/30 backdrop-blur-xl border-r border-outline-variant/10 shadow-[0_0_40px_rgba(208,188,255,0.1)] flex flex-col py-margin_desktop z-50">
+<div class="px-gutter mb-stack_lg flex items-center gap-stack_sm">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim tracking-tight">StoryWeaver</div>
+</div>
+<div class="px-gutter mb-stack_lg text-on-surface-variant font-label-md text-label-md">Creative Studio</div>
+<button class="mx-gutter mb-stack_lg bg-gradient-to-r from-primary-container to-secondary-container text-on-primary-container font-label-md text-label-md uppercase py-stack_sm px-gutter rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+            New Project
+        </button>
+<div class="flex flex-col flex-1 gap-1 px-stack_sm">
+<a class="flex items-center gap-stack_md py-stack_sm px-gutter text-on-surface-variant hover:bg-surface-bright/20 hover:backdrop-blur-2xl transition-all duration-300 active:scale-95 transition-transform rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-stack_md py-stack_sm px-gutter text-primary border-l-4 border-primary bg-primary-container/10 hover:bg-surface-bright/20 hover:backdrop-blur-2xl transition-all duration-300 active:scale-95 transition-transform rounded-r-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">folder_open</span>
+<span class="font-body-md text-body-md font-bold">Projects</span>
+</a>
+<a class="flex items-center gap-stack_md py-stack_sm px-gutter text-on-surface-variant hover:bg-surface-bright/20 hover:backdrop-blur-2xl transition-all duration-300 active:scale-95 transition-transform rounded-lg" href="#">
+<span class="material-symbols-outlined">person_book</span>
+<span class="font-body-md text-body-md">Characters</span>
+</a>
+<a class="flex items-center gap-stack_md py-stack_sm px-gutter text-on-surface-variant hover:bg-surface-bright/20 hover:backdrop-blur-2xl transition-all duration-300 active:scale-95 transition-transform rounded-lg" href="#">
+<span class="material-symbols-outlined">movie_edit</span>
+<span class="font-body-md text-body-md">Scenes</span>
+</a>
+<a class="flex items-center gap-stack_md py-stack_sm px-gutter text-on-surface-variant hover:bg-surface-bright/20 hover:backdrop-blur-2xl transition-all duration-300 active:scale-95 transition-transform rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</div>
+<div class="flex flex-col mt-auto pt-stack_lg px-stack_sm gap-1 border-t border-outline-variant/10 mx-gutter">
+<a class="flex items-center gap-stack_md py-stack_sm px-gutter text-on-surface-variant hover:bg-surface-bright/20 hover:backdrop-blur-2xl transition-all duration-300 active:scale-95 transition-transform rounded-lg" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-label-md text-label-md">Help</span>
+</a>
+<a class="flex items-center gap-stack_md py-stack_sm px-gutter text-error hover:bg-error-container/20 hover:backdrop-blur-2xl transition-all duration-300 active:scale-95 transition-transform rounded-lg" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md">Sign Out</span>
+</a>
+</div>
+</nav>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 h-[56px] w-[calc(100%-260px)] bg-surface-container/30 dark:bg-surface-container-low/30 backdrop-blur-xl border-b border-outline-variant/10 flex justify-between items-center px-gutter h-full z-40">
+<div class="flex items-center gap-stack_md">
+<div class="flex items-center text-on-surface-variant font-label-md text-label-md gap-2">
+<span class="hover:text-primary cursor-pointer transition-colors duration-200">Novel Overview</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-primary font-bold border-b-2 border-primary pb-1">The Last Ember</span>
+</div>
+</div>
+<div class="flex items-center gap-stack_lg h-full">
+<nav class="hidden md:flex items-center gap-stack_lg h-full">
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200 cursor-pointer active:opacity-70 flex items-center h-full" href="#">Drafts</a>
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200 cursor-pointer active:opacity-70 flex items-center h-full" href="#">Archive</a>
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200 cursor-pointer active:opacity-70 flex items-center h-full" href="#">Shared</a>
+</nav>
+<div class="flex items-center gap-stack_sm">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-bright/20">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-bright/20">
+<span class="material-symbols-outlined">search</span>
+</button>
+<div class="w-8 h-8 rounded-full ml-stack_sm overflow-hidden border border-outline-variant cursor-pointer hover:border-primary transition-colors">
+<img alt="Current user avatar" class="w-full h-full object-cover" data-alt="A small, circular avatar image depicting a stylized, neon-noir portrait of a young woman with short purple hair and cybernetic implants around her eyes. The style is detailed, cinematic, and dark-themed." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnylLLG9VfOCEaJcvyqZnEG14m4Y7dVUGBm5ZJERCmuwb908MxGQazlF5tt4LJKBBmGEXDjUqgGC6g-tehYNVi4qKn0xfv3w5tkgBfRroIMLwPkaI6TRqDI0d8iadKjFUjyd-hSM2sr_1pkZ6RTOhv54B2Rr_-ouBTiVrGyAc0e9YHVb_0pqVxJlSpxbr9UBj4ylp4T56oj6xk2tQDG19GZFX5jWl1YQxVX7yo39kYZ-c9elP4qOzO"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-[260px] pt-[56px] min-h-screen p-margin_desktop">
+<div class="max-w-[1440px] mx-auto">
+<!-- Header Section -->
+<div class="mb-stack_lg flex justify-between items-end">
+<div>
+<h1 class="font-display-md text-display-md text-primary-fixed-dim mb-stack_sm">The Last Ember</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">A sweeping tale of forgotten magic and the impending collapse of the high-tech metropolis of Veridia.</p>
+</div>
+<div class="flex gap-stack_sm">
+<button class="px-stack_md py-stack_sm border border-primary text-primary font-label-md text-label-md uppercase rounded-lg hover:bg-primary/10 transition-colors">
+                        Edit Details
+                    </button>
+<button class="px-stack_md py-stack_sm bg-gradient-to-r from-primary-container to-secondary-container text-on-primary-container font-label-md text-label-md uppercase rounded-lg hover:opacity-90 transition-opacity">
+                        Continue Writing
+                    </button>
+</div>
+</div>
+<!-- Two Column Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Chapter List (60%) -->
+<div class="lg:col-span-7 flex flex-col gap-gutter">
+<div class="bg-surface-container/50 backdrop-blur-xl border border-outline-variant/20 rounded-xl p-gutter shadow-[0_40px_80px_rgba(0,0,0,0.5)]">
+<div class="flex justify-between items-center mb-stack_md">
+<h2 class="font-headline-md text-headline-md text-on-surface">Manuscript</h2>
+<span class="font-label-md text-label-md text-tertiary-fixed-dim bg-tertiary-container/30 px-3 py-1 rounded-full">42,500 Words</span>
+</div>
+<!-- Chapters -->
+<div class="flex flex-col gap-stack_sm">
+<!-- Chapter 1 -->
+<div class="group p-stack_md rounded-lg hover:bg-surface-bright/30 transition-colors border border-transparent hover:border-outline-variant/30 cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-md text-headline-md text-primary-fixed text-lg">1. The Spark in the Ash</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Completed</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-3 line-clamp-2">Kaelin discovers a strange, glowing artifact in the lower levels of the scrap yards, setting off a chain of events that will alert the Overseers.</p>
+<div class="flex items-center gap-stack_md">
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">format_list_numbered</span>
+                                        3 Scenes
+                                    </div>
+<div class="w-full bg-surface-variant rounded-full h-1.5 max-w-[100px]">
+<div class="bg-tertiary h-1.5 rounded-full w-full"></div>
+</div>
+</div>
+</div>
+<!-- Chapter 2 -->
+<div class="group p-stack_md rounded-lg bg-surface-bright/10 border border-primary/20 cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-md text-headline-md text-primary-fixed text-lg">2. Echoes of the Old World</h3>
+<span class="font-label-sm text-label-sm text-secondary">In Progress</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-3 line-clamp-2">Fleeing the immediate area, Kaelin seeks refuge with an old historian who reveals the artifact's true nature as a primer for ancient magic.</p>
+<div class="flex items-center gap-stack_md">
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">format_list_numbered</span>
+                                        5 Scenes
+                                    </div>
+<div class="w-full bg-surface-variant rounded-full h-1.5 max-w-[100px]">
+<div class="bg-secondary h-1.5 rounded-full" style="width: 60%"></div>
+</div>
+</div>
+</div>
+<!-- Chapter 3 -->
+<div class="group p-stack_md rounded-lg hover:bg-surface-bright/30 transition-colors border border-transparent hover:border-outline-variant/30 cursor-pointer opacity-70">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-md text-headline-md text-on-surface text-lg">3. The Overseer's Gaze</h3>
+<span class="font-label-sm text-label-sm text-outline">Drafting</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-3 line-clamp-2">Lord Vane is alerted to the energy signature. He dispatches his elite hunters into the lower levels.</p>
+<div class="flex items-center gap-stack_md">
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">format_list_numbered</span>
+                                        0 Scenes
+                                    </div>
+<div class="w-full bg-surface-variant rounded-full h-1.5 max-w-[100px]">
+<div class="bg-primary h-1.5 rounded-full" style="width: 10%"></div>
+</div>
+</div>
+</div>
+</div>
+<button class="w-full mt-stack_md py-stack_sm border border-dashed border-outline-variant text-on-surface-variant font-label-md text-label-md rounded-lg hover:bg-surface-bright/20 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                            Add Chapter
+                        </button>
+</div>
+</div>
+<!-- Right Column: Character Bank (40%) -->
+<div class="lg:col-span-5 flex flex-col gap-gutter">
+<div class="bg-surface-container-high/40 backdrop-blur-md border border-outline-variant/10 rounded-xl p-gutter relative overflow-hidden">
+<!-- Decorative background glow -->
+<div class="absolute -top-20 -right-20 w-64 h-64 bg-primary/10 rounded-full blur-[80px] pointer-events-none"></div>
+<div class="flex justify-between items-center mb-stack_md relative z-10">
+<h2 class="font-headline-md text-headline-md text-on-surface">Character Bank</h2>
+<button class="p-1 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+<div class="flex flex-col gap-stack_md relative z-10">
+<!-- Protagonist Card -->
+<div class="bg-surface-container/60 border border-outline-variant/20 rounded-lg p-stack_md flex gap-stack_md hover:border-primary/50 transition-colors cursor-pointer group">
+<div class="w-20 h-20 rounded-lg overflow-hidden shrink-0 border border-outline-variant group-hover:border-primary transition-colors relative">
+<img alt="Kaelin Avatar" class="w-full h-full object-cover" data-alt="A cinematic portrait of Kaelin, a gritty young protagonist from a dystopian sci-fi world. She has smudged ash on her cheeks, fierce determining eyes, and wears layered, worn, high-tech scavenger gear. Dark, moody lighting with a subtle neon fuchsia rim light." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAN3oLB_naXesX57aX_pnbNyfJTmsb4mTOo2XLCVNPLkAP_kAhcwv1Mw4oSzZezvbv_eS1pWdQ-9VFCm6RM3BJopYss1EXeW78yjyE7UAvU5Y46aqUX96oslgx0BhdIelaNjzzICQjlzJNh-6lh5aUQQ8Go9t20P1yMBI2I03L8t0R-Nn-uayIUaOlnfMKLxU8nq2A-8eaQ2-QdN9ikEikcfywT1P3YV7R3Ovrqydo83LRph2-QTY3n"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-headline-md text-headline-md text-primary-fixed text-lg">Kaelin</h3>
+<span class="font-label-sm text-label-sm text-tertiary-fixed-dim bg-tertiary-container/30 px-2 py-0.5 rounded border border-tertiary/20">Protagonist</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 mb-2 line-clamp-2">A resourceful scavenger from the lower sectors, deeply untrusting but driven by a hidden lineage.</p>
+<div class="flex gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-bright px-2 py-0.5 rounded-full">Stubborn</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-bright px-2 py-0.5 rounded-full">Agile</span>
+</div>
+</div>
+</div>
+<!-- Antagonist Card -->
+<div class="bg-surface-container/60 border border-outline-variant/20 rounded-lg p-stack_md flex gap-stack_md hover:border-error/50 transition-colors cursor-pointer group">
+<div class="w-20 h-20 rounded-lg overflow-hidden shrink-0 border border-outline-variant group-hover:border-error transition-colors relative">
+<img alt="Lord Vane Avatar" class="w-full h-full object-cover" data-alt="A chilling, high-fidelity portrait of Lord Vane, a cybernetically enhanced aristocrat. He has pale, sharp features, a cold gaze, and wears immaculate, dark geometric clothing with subtle glowing red circuitry lines. Set against a dark, oppressive background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4v9h5NeURUCKxcPcE561d-laHB_GE4uFpqrSN77xO4kqQIk-D7btqb088onCjO-r6503r6T11KpoNboTeVDtIDXYfqugLAg-4Ee6FUdHCwcmTqLhyVXZ6z-6UsgRQWdFZqAusYVkNmn0ReykxOCpLmfIsfnBFN-LoHF04Tlm5bg-zUO-1aLOcwo0WIrixr-UIbgcJu7S64KF3UB0es3fzzqDD-bnZ7MKTX3szscWZpJIDEZUbJYs8"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-headline-md text-headline-md text-on-surface text-lg">Lord Vane</h3>
+<span class="font-label-sm text-label-sm text-error bg-error-container/30 px-2 py-0.5 rounded border border-error/20">Antagonist</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 mb-2 line-clamp-2">The ruthless Overseer of Veridia's upper sectors, obsessed with maintaining order and eradicating old magic.</p>
+<div class="flex gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-bright px-2 py-0.5 rounded-full">Calculating</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-bright px-2 py-0.5 rounded-full">Implacable</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-stack_md text-center">
+<a class="font-label-md text-label-md text-primary hover:text-primary-fixed transition-colors inline-flex items-center gap-1" href="#">
+                                View All Characters
+                                <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
