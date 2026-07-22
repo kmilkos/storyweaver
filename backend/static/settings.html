@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>StoryWeaver - Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "background": "#0b1326", "surface": "#0b1326",
+        "surface-bright": "#31394d", "surface-container": "#171f33",
+        "surface-container-low": "#131b2e", "surface-container-lowest": "#060e20",
+        "surface-variant": "#2d3449", "on-surface": "#dae2fd",
+        "on-surface-variant": "#cbc3d7", "on-background": "#dae2fd",
+        "primary": "#d0bcff", "primary-container": "#6c3bd5",
+        "on-primary": "#3b0091", "on-primary-container": "#dfd1ff",
+        "secondary": "#fbabff", "tertiary": "#4fdbc8",
+        "error": "#ffb4ab", "error-container": "#93000a",
+        "outline": "#958ea0", "outline-variant": "#494454",
+        "success": "#22C55E",
+      },
+      fontFamily: { "display-md": ["Space Grotesk"], "headline-md": ["Space Grotesk"], "body-md": ["Inter"], "body-sm": ["Inter"], "label-md": ["JetBrains Mono"], "label-sm": ["JetBrains Mono"] },
+      fontSize: { "display-md": ["48px", { lineHeight: "56px", letterSpacing: "-0.01em", fontWeight: "700" }], "headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }], "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }], "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }], "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "500" }] },
+      spacing: { "gutter": "24px", "stack_sm": "8px", "stack_md": "16px", "stack_lg": "32px" },
+      borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem" }
+    }
+  }
+}
+</script>
+<style>
+body { background-color: #0b1326; color: #dae2fd; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: rgba(208,188,255,0.05); }
+::-webkit-scrollbar-thumb { background: rgba(108,59,213,0.4); border-radius: 4px; }
+.input { width:100%; background:#131b2e; border:1px solid #494454; border-radius:0.5rem; padding:12px 16px; font-size:14px; color:#dae2fd; outline:none; }
+.input:focus { border-color:#d0bcff; box-shadow:0 0 0 1px rgba(208,188,255,0.3); }
+.btn-primary { background:linear-gradient(135deg, #6c3bd5, #ae05c6); color:#fff; padding:10px 24px; border-radius:0.5rem; font-size:12px; font-weight:500; letter-spacing:0.05em; text-transform:uppercase; border:none; cursor:pointer; transition:opacity 0.2s; }
+.btn-primary:hover { opacity:0.9; }
+.btn-primary:disabled { opacity:0.5; cursor:not-allowed; }
+</style>
+</head>
+<body class="font-body-md text-body-md min-h-screen">
+<nav class="fixed left-0 top-0 h-full w-[260px] bg-surface-container-low/30 backdrop-blur-xl border-r border-outline-variant/10 flex flex-col py-8 z-50">
+  <div class="px-6 mb-8 flex items-center gap-2">
+    <span class="material-symbols-outlined text-primary-fixed-dim text-[32px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+    <div><h1 class="font-headline-md text-headline-md font-bold text-primary-fixed-dim tracking-tight">StoryWeaver</h1><p class="font-label-md text-label-md text-on-surface-variant uppercase opacity-70">Creative Studio</p></div>
+  </div>
+  <div class="flex-1 px-2 space-y-1">
+    <a href="/static/index.html" class="flex items-center gap-4 py-2 px-4 text-on-surface-variant hover:bg-surface-bright/20 transition-all rounded-lg"><span class="material-symbols-outlined">dashboard</span><span class="font-body-md text-body-md">Dashboard</span></a>
+    <a href="/static/index.html" class="flex items-center gap-4 py-2 px-4 text-on-surface-variant hover:bg-surface-bright/20 transition-all rounded-lg"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">folder_open</span><span class="font-body-md text-body-md">Projects</span></a>
+    <a href="/static/settings.html" class="flex items-center gap-4 py-2 px-4 text-primary border-l-4 border-primary bg-primary-container/10 rounded-r-lg"><span class="material-symbols-outlined">settings</span><span class="font-body-md text-body-md font-medium">Settings</span></a>
+  </div>
+</nav>
+
+<main class="ml-[260px] min-h-screen p-10">
+  <div class="max-w-[800px] mx-auto">
+    <h1 class="font-display-md text-display-md text-primary-fixed-dim mb-2">Settings</h1>
+    <p class="font-body-md text-body-md text-on-surface-variant mb-8">Configure API keys and storage paths for your StoryWeaver instance.</p>
+
+    <div class="bg-surface-container/50 backdrop-blur-xl border border-outline-variant/20 rounded-xl p-6 space-y-6">
+      <h2 class="font-headline-md text-headline-md text-on-surface">API Keys</h2>
+
+      <div class="space-y-2">
+        <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Gemini API Key</label>
+        <div class="relative">
+          <input id="gemini-key" class="input pr-20" type="password" placeholder="AIzaSy...">
+          <button onclick="toggleKey('gemini-key', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary text-sm">Show</button>
+        </div>
+        <p class="font-label-sm text-label-sm text-on-surface-variant">Required for character extraction, scene splitting, and TTS. Get one at <a class="text-primary" href="https://aistudio.google.com" target="_blank">aistudio.google.com</a></p>
+      </div>
+
+      <div class="space-y-2">
+        <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Stability AI Key <span class="text-on-surface-variant/50">(optional)</span></label>
+        <input id="stability-key" class="input" type="password" placeholder="sk-...">
+      </div>
+
+      <div class="space-y-2">
+        <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">ElevenLabs Key <span class="text-on-surface-variant/50">(optional)</span></label>
+        <input id="elevenlabs-key" class="input" type="password" placeholder="sk_...">
+      </div>
+    </div>
+
+    <div class="bg-surface-container/50 backdrop-blur-xl border border-outline-variant/20 rounded-xl p-6 mt-6 space-y-6">
+      <h2 class="font-headline-md text-headline-md text-on-surface">Storage</h2>
+
+      <div class="space-y-2">
+        <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Projects Directory</label>
+        <input id="projects-dir" class="input" type="text" placeholder="./projects">
+        <p class="font-label-sm text-label-sm text-on-surface-variant">Where project files and generated assets are stored.</p>
+      </div>
+    </div>
+
+    <div class="bg-surface-container/50 backdrop-blur-xl border border-outline-variant/20 rounded-xl p-6 mt-6 space-y-6">
+      <h2 class="font-headline-md text-headline-md text-on-surface">System</h2>
+      <div id="status-area" class="space-y-2">
+        <div class="flex justify-between items-center py-2 border-b border-outline-variant/10">
+          <span class="font-body-sm text-body-sm text-on-surface-variant">Server</span>
+          <span class="font-label-md text-label-md text-success flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-success inline-block"></span> Running</span>
+        </div>
+        <div class="flex justify-between items-center py-2 border-b border-outline-variant/10">
+          <span class="font-body-sm text-body-sm text-on-surface-variant">Gemini API</span>
+          <span id="gemini-status" class="font-label-md text-label-md text-error flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-error inline-block"></span> Not configured</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-4 mt-8">
+      <button onclick="loadSettings()" class="px-6 py-2.5 border border-outline-variant text-on-surface-variant font-label-md text-label-md uppercase rounded-lg hover:bg-surface-bright/20 transition-colors">Reset</button>
+      <button id="save-btn" onclick="saveSettings()" class="btn-primary">Save Settings</button>
+    </div>
+
+    <div id="toast" class="fixed bottom-6 right-6 bg-surface-container-high border border-outline-variant/30 backdrop-blur-xl rounded-lg px-6 py-3 shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 font-body-sm text-body-sm"></div>
+  </div>
+</main>
+
+<script>
+async function loadSettings() {
+  try {
+    const r = await fetch('/api/settings');
+    const s = await r.json();
+    document.getElementById('gemini-key').value = s.gemini_api_key || '';
+    document.getElementById('stability-key').value = s.stability_api_key || '';
+    document.getElementById('elevenlabs-key').value = s.elevenlabs_api_key || '';
+    document.getElementById('projects-dir').value = s.projects_dir || '';
+    const status = document.getElementById('gemini-status');
+    if (s.gemini_configured) {
+      status.innerHTML = '<span class="w-2 h-2 rounded-full bg-success inline-block"></span> Configured';
+      status.className = 'font-label-md text-label-md text-success flex items-center gap-1';
+    }
+  } catch (e) {}
+}
+
+async function saveSettings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+  try {
+    const r = await fetch('/api/settings', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        gemini_api_key: document.getElementById('gemini-key').value,
+        stability_api_key: document.getElementById('stability-key').value,
+        elevenlabs_api_key: document.getElementById('elevenlabs-key').value,
+        projects_dir: document.getElementById('projects-dir').value,
+      })
+    });
+    if (r.ok) {
+      showToast('Settings saved successfully', '#22C55E');
+      loadSettings();
+    } else {
+      const err = await r.json();
+      showToast('Error: ' + (err.detail || 'Save failed'), '#EF4444');
+    }
+  } catch (e) {
+    showToast('Failed to save settings', '#EF4444');
+  }
+  btn.disabled = false;
+  btn.textContent = 'Save Settings';
+}
+
+function toggleKey(id, btn) {
+  const input = document.getElementById(id);
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.textContent = 'Hide';
+  } else {
+    input.type = 'password';
+    btn.textContent = 'Show';
+  }
+}
+
+function showToast(msg, color) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.borderLeftColor = color;
+  t.style.borderLeft = '4px solid ' + color;
+  t.style.transform = 'translateY(0)';
+  t.style.opacity = '1';
+  setTimeout(() => { t.style.transform = 'translateY(20px)'; t.style.opacity = '0'; }, 3000);
+}
+
+loadSettings();
+</script>
+</body>
+</html>
