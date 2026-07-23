@@ -52,6 +52,8 @@ def api_update_scene(project_id: str, scene_id: str, body: SceneUpdate):
         scene.camera_motion = body.camera_motion
     if body.character_ids is not None:
         scene.character_ids = body.character_ids
+    if body.video_path is not None:
+        scene.video_path = body.video_path
 
     save_scene(scene)
     return scene

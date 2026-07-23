@@ -169,7 +169,10 @@ tailwind.config = {
             <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Upload a generated video</p>
             <input type="file" id="video-input" accept="video/*" class="hidden" onchange="uploadVideo(this)">
           </div>
-          <video id="video-preview" class="w-full rounded-lg hidden" controls></video>
+          <div id="video-preview-container" class="relative hidden">
+            <video id="video-preview" class="w-full rounded-lg" controls></video>
+            <button onclick="removeVideo()" class="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-error transition-colors"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+          </div>
         </div>
         <div class="h-px w-full bg-outline-variant/10"></div>
         <div class="space-y-2">
@@ -294,13 +297,14 @@ function selectScene(index) {
   }
 
   const video = document.getElementById('video-preview');
+  const videoContainer = document.getElementById('video-preview-container');
   const uploadArea = document.getElementById('video-upload-area');
   if (s.video_path) {
     video.src = s.video_path;
-    video.classList.remove('hidden');
+    videoContainer.classList.remove('hidden');
     uploadArea.classList.add('hidden');
   } else {
-    video.classList.add('hidden');
+    videoContainer.classList.add('hidden');
     uploadArea.classList.remove('hidden');
   }
 
@@ -415,6 +419,19 @@ async function uploadVideo(input) {
     addLog(`Uploaded video for Scene ${s.order}`);
     selectScene(currentScene);
   } catch (e) { alert('Video upload failed.'); }
+}
+
+async function removeVideo() {
+  const s = scenes[currentScene];
+  await fetch(`/api/projects/${projectId}/scenes/${s.id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ video_path: '' })
+  });
+  s.video_path = '';
+  s.status = 'draft';
+  addLog(`Removed video from Scene ${s.order}`);
+  selectScene(currentScene);
 }
 
 async function previewVoice() {
