@@ -31,12 +31,13 @@ def api_generate_image(project_id: str, scene_id: str):
     output_path = project_dir / "scenes" / f"scene_{scene.order:03d}.png"
 
     try:
-        path = generate_image(prompt, output_path)
+        generate_image(prompt, output_path)
     except ValueError as e:
         raise HTTPException(400, str(e))
 
-    scene.image_path = path
+    image_url = f"/projects/{project.slug}/scenes/{output_path.name}"
+    scene.image_path = image_url
     scene.status = SceneStatus.image_generated
     save_scene(scene)
 
-    return {"image_path": path, "status": scene.status.value}
+    return {"image_path": image_url, "status": scene.status.value}
