@@ -44,7 +44,11 @@ def api_generate_story(body: GenerateRequest):
 
     full_text = f"# {title}\n\n"
     for scene in scenes_data:
-        full_text += f"Scene {scene.get('order', 1)}:\n{scene.get('narration', '')}\n\n"
+        full_text += f"## Scene {scene.get('order', 1)}\n\n"
+        full_text += f"{scene.get('narration', '')}\n\n"
+        img_desc = scene.get('image_description', '')
+        if img_desc:
+            full_text += f"[Visual: {img_desc}]\n\n"
 
     project_dir = PROJECTS_DIR / slug
     project_dir.mkdir(parents=True, exist_ok=True)
@@ -53,7 +57,7 @@ def api_generate_story(body: GenerateRequest):
     (project_dir / "audio").mkdir(exist_ok=True)
     (project_dir / "exports").mkdir(exist_ok=True)
 
-    file_path = project_dir / "generated_story.txt"
+    file_path = project_dir / "manuscript.txt"
     file_path.write_text(full_text)
 
     project = Project(
