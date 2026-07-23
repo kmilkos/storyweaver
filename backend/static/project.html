@@ -199,7 +199,7 @@ async function loadProject() {
     const ch = document.getElementById('chapter-list');
     if (project.chapters.length) {
       ch.innerHTML = project.chapters.map(c => `
-        <div onclick="window.location='/static/editor.html?id=${projectId}&chapter_id=${c.id}'" class="group p-4 rounded-lg hover:bg-surface-bright/30 transition-colors border border-transparent hover:border-outline-variant/30 cursor-pointer">
+        <div onclick="window.location='/static/editor.html?id=${projectId}'" class="group p-4 rounded-lg hover:bg-surface-bright/30 transition-colors border border-transparent hover:border-outline-variant/30 cursor-pointer">
           <div class="flex justify-between items-start mb-2">
             <h3 class="font-headline-md text-headline-md text-primary-fixed text-lg">${c.title}</h3>
           </div>
