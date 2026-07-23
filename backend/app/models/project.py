@@ -15,6 +15,16 @@ class ProjectStatus(str, Enum):
     complete = "complete"
 
 
+class AspectRatio(str, Enum):
+    landscape = "16:9"
+    portrait = "9:16"
+
+
+class CompileMode(str, Enum):
+    slideshow = "slideshow"
+    video = "video"
+
+
 class Chapter(BaseModel):
     id: str = Field(default_factory=lambda: uuid4().hex[:12])
     title: str
@@ -29,6 +39,8 @@ class Project(BaseModel):
     status: ProjectStatus = ProjectStatus.draft
     chapters: list[Chapter] = []
     character_ids: list[str] = []
+    aspect_ratio: AspectRatio = AspectRatio.landscape
+    compile_mode: CompileMode = CompileMode.slideshow
     created_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
     updated_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
 
@@ -36,6 +48,8 @@ class Project(BaseModel):
 class ProjectCreate(BaseModel):
     title: str
     author: str = ""
+    aspect_ratio: AspectRatio = AspectRatio.landscape
+    compile_mode: CompileMode = CompileMode.slideshow
 
 
 class ProjectSummary(BaseModel):
@@ -45,4 +59,6 @@ class ProjectSummary(BaseModel):
     status: ProjectStatus
     chapter_count: int
     character_count: int
+    aspect_ratio: AspectRatio
+    compile_mode: CompileMode
     created_at: str

@@ -75,7 +75,7 @@ body { background-color: #0b1326; color: #dae2fd; }
       <span id="new-project-icon" class="material-symbols-outlined text-on-primary-container">add</span>
       <span id="new-project-label" class="font-label-md text-label-md text-on-primary-container uppercase">New Project</span>
     </button>
-    <input id="upload-input" type="file" accept=".txt,.pdf" class="hidden" onchange="uploadProject(this)">
+    <input id="upload-input" type="file" accept=".txt,.pdf" class="hidden" onchange="onFilePicked(this)">
   </div>
   <div class="flex-1 overflow-y-auto px-2 space-y-1">
     <a class="flex items-center gap-4 py-2 px-4 rounded-lg text-on-surface-variant hover:bg-surface-bright/20 transition-all" href="/static/index.html">
@@ -152,6 +152,54 @@ body { background-color: #0b1326; color: #dae2fd; }
   </div>
 </main>
 
+<div id="setup-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+  <div class="bg-surface-container border border-outline-variant/20 rounded-xl p-8 w-full max-w-md mx-4 shadow-2xl">
+    <h3 class="font-headline-md text-headline-md text-on-surface mb-1">Project Setup</h3>
+    <p class="font-body-sm text-body-sm text-on-surface-variant mb-6">Configure your new project before uploading.</p>
+
+    <label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-3 block">Aspect Ratio</label>
+    <div class="grid grid-cols-2 gap-3 mb-6">
+      <label class="flex items-center gap-3 p-3 rounded-lg border border-outline-variant/20 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary-container/10 transition-all">
+        <input type="radio" name="ar" value="16:9" checked class="w-4 h-4 accent-primary shrink-0">
+        <div>
+          <span class="font-body-md text-body-md text-on-surface block">16:9</span>
+          <span class="font-body-sm text-body-sm text-on-surface-variant">Landscape</span>
+        </div>
+      </label>
+      <label class="flex items-center gap-3 p-3 rounded-lg border border-outline-variant/20 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary-container/10 transition-all">
+        <input type="radio" name="ar" value="9:16" class="w-4 h-4 accent-primary shrink-0">
+        <div>
+          <span class="font-body-md text-body-md text-on-surface block">9:16</span>
+          <span class="font-body-sm text-body-sm text-on-surface-variant">Portrait / TikTok</span>
+        </div>
+      </label>
+    </div>
+
+    <label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-3 block">Compile Mode</label>
+    <div class="grid grid-cols-2 gap-3 mb-6">
+      <label class="flex items-center gap-3 p-3 rounded-lg border border-outline-variant/20 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary-container/10 transition-all">
+        <input type="radio" name="mode" value="slideshow" checked class="w-4 h-4 accent-primary shrink-0">
+        <div>
+          <span class="font-body-md text-body-md text-on-surface block">Slideshow</span>
+          <span class="font-body-sm text-body-sm text-on-surface-variant">Images + narration</span>
+        </div>
+      </label>
+      <label class="flex items-center gap-3 p-3 rounded-lg border border-outline-variant/20 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary-container/10 transition-all">
+        <input type="radio" name="mode" value="video" class="w-4 h-4 accent-primary shrink-0">
+        <div>
+          <span class="font-body-md text-body-md text-on-surface block">Video</span>
+          <span class="font-body-sm text-body-sm text-on-surface-variant">Stitch clips</span>
+        </div>
+      </label>
+    </div>
+
+    <div class="flex gap-3 justify-end">
+      <button onclick="document.getElementById('setup-modal').classList.add('hidden'); document.getElementById('upload-input').value = ''; _pendingFile = null;" class="px-5 py-2 rounded-lg text-on-surface-variant hover:bg-surface-bright/20 transition-colors font-label-md text-label-md uppercase">Cancel</button>
+      <button onclick="uploadProject()" class="px-5 py-2 rounded-lg bg-primary text-on-primary font-label-md text-label-md uppercase hover:opacity-90 transition-all">Create</button>
+    </div>
+  </div>
+</div>
+
 <script>
 async function loadProjects() {
   try {
@@ -179,6 +227,10 @@ async function loadProjects() {
           <div>
             <h4 class="font-headline-md text-headline-md text-on-surface mb-1 group-hover:text-primary-fixed-dim transition-colors">${p.title}</h4>
             <p class="font-body-sm text-body-sm text-on-surface-variant">${p.author || 'Unknown author'} · ${p.chapter_count} chapters</p>
+            <div class="flex gap-2 mt-2">
+              <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full border border-outline-variant/20 text-outline">${p.aspect_ratio || '16:9'}</span>
+              <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full border border-outline-variant/20 text-outline">${p.compile_mode || 'slideshow'}</span>
+            </div>
           </div>
           <div class="mt-auto pt-4">
             <div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant uppercase mb-2">
@@ -249,18 +301,31 @@ function setLoading(loading) {
   label.textContent = loading ? 'Uploading...' : 'New Project';
 }
 
-async function uploadProject(input) {
+let _pendingFile = null;
+
+function onFilePicked(input) {
   const file = input.files[0];
   if (!file) return;
+  _pendingFile = file;
+  document.getElementById('setup-modal').classList.remove('hidden');
+}
+
+async function uploadProject() {
+  const file = _pendingFile;
+  if (!file) return;
   setLoading(true);
+  document.getElementById('setup-modal').classList.add('hidden');
   const form = new FormData();
   form.append('file', file);
+  form.append('aspect_ratio', document.querySelector('input[name="ar"]:checked').value);
+  form.append('compile_mode', document.querySelector('input[name="mode"]:checked').value);
   try {
     const res = await fetch('/api/projects/upload', { method: 'POST', body: form });
     if (res.ok) {
       const project = await res.json();
       addLog(`Uploaded "${project.title}" — ${file.name}`);
-      input.value = '';
+      document.getElementById('upload-input').value = '';
+      _pendingFile = null;
       await loadProjects();
     } else {
       const err = await res.json();
@@ -271,6 +336,16 @@ async function uploadProject(input) {
   } finally {
     setLoading(false);
   }
+}
+
+function setLoading(loading) {
+  const btn = document.getElementById('new-project-btn');
+  const icon = document.getElementById('new-project-icon');
+  const label = document.getElementById('new-project-label');
+  btn.disabled = loading;
+  btn.style.opacity = loading ? '0.7' : '1';
+  icon.textContent = loading ? 'hourglass_top' : 'add';
+  label.textContent = loading ? 'Uploading...' : 'New Project';
 }
 
 restoreLog();

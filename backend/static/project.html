@@ -111,6 +111,7 @@ body { background-color: #0b1326; color: #dae2fd; }
       <div>
         <h1 class="font-display-md text-display-md text-primary-fixed-dim mb-2" id="project-title">Loading...</h1>
         <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl" id="project-author"></p>
+        <div class="flex gap-2 mt-2" id="project-tags"></div>
       </div>
       <div class="flex gap-2" id="project-actions">
         <button id="extract-btn" onclick="extractCharacters()" class="px-4 py-2 border border-primary text-primary font-label-md text-label-md uppercase rounded-lg hover:bg-primary/10 transition-colors flex items-center gap-2">
@@ -141,6 +142,23 @@ body { background-color: #0b1326; color: #dae2fd; }
       </div>
 
       <div class="lg:col-span-5 flex flex-col gap-6">
+        <div class="bg-surface-container-high/40 backdrop-blur-md border border-outline-variant/10 rounded-xl p-6 relative overflow-hidden">
+          <div class="absolute -top-20 -right-20 w-64 h-64 bg-tertiary/10 rounded-full blur-[80px] pointer-events-none"></div>
+          <div class="flex justify-between items-center mb-4 relative z-10">
+            <h2 class="font-headline-md text-headline-md text-on-surface">Project Settings</h2>
+          </div>
+          <div class="space-y-3 relative z-10" id="project-settings-info">
+            <div class="flex justify-between items-center p-3 bg-surface-container/60 rounded-lg border border-outline-variant/10">
+              <span class="font-body-sm text-body-sm text-on-surface-variant">Aspect Ratio</span>
+              <span class="font-label-md text-label-md text-on-surface" id="info-ar">16:9</span>
+            </div>
+            <div class="flex justify-between items-center p-3 bg-surface-container/60 rounded-lg border border-outline-variant/10">
+              <span class="font-body-sm text-body-sm text-on-surface-variant">Compile Mode</span>
+              <span class="font-label-md text-label-md text-on-surface" id="info-mode">slideshow</span>
+            </div>
+          </div>
+        </div>
+
         <div class="bg-surface-container-high/40 backdrop-blur-md border border-outline-variant/10 rounded-xl p-6 relative overflow-hidden">
           <div class="absolute -top-20 -right-20 w-64 h-64 bg-primary/10 rounded-full blur-[80px] pointer-events-none"></div>
           <div class="flex justify-between items-center mb-4 relative z-10">
@@ -196,6 +214,12 @@ async function loadProject() {
     document.getElementById('project-title-nav').textContent = project.title;
     document.getElementById('project-author').textContent = `${project.author || 'Unknown author'} · ${project.chapters.length} chapters`;
     document.getElementById('status-badge').textContent = project.status.replace(/_/g, ' ');
+    document.getElementById('project-tags').innerHTML = `
+      <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full border border-outline-variant/30 text-on-surface-variant">${project.aspect_ratio || '16:9'}</span>
+      <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full border border-outline-variant/30 text-on-surface-variant">${project.compile_mode || 'slideshow'}</span>
+    `;
+    document.getElementById('info-ar').textContent = project.aspect_ratio || '16:9';
+    document.getElementById('info-mode').textContent = project.compile_mode || 'slideshow';
 
     const ch = document.getElementById('chapter-list');
     if (project.chapters.length) {

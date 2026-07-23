@@ -17,6 +17,12 @@ def _resolve_path(path: str) -> str:
     return path
 
 
+def _resolution(project) -> tuple[int, int]:
+    if project.aspect_ratio == "9:16":
+        return (1080, 1920)
+    return (1920, 1080)
+
+
 router = APIRouter(prefix="/api/projects", tags=["export"])
 
 
@@ -47,7 +53,7 @@ def api_export_preview(project_id: str):
     ]
 
     try:
-        compile_preview(scene_dicts, output_path, max_scenes=3)
+        compile_preview(scene_dicts, output_path, max_scenes=3, resolution=_resolution(project))
     except ValueError as e:
         raise HTTPException(400, str(e))
 
@@ -81,7 +87,7 @@ def api_export_full(project_id: str):
     ]
 
     try:
-        compile_video(scene_dicts, output_path)
+        compile_video(scene_dicts, output_path, resolution=_resolution(project))
     except ValueError as e:
         raise HTTPException(400, str(e))
 

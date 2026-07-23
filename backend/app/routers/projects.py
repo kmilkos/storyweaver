@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from uuid import uuid4
 
-from fastapi import APIRouter, HTTPException, UploadFile
+from fastapi import APIRouter, Form, HTTPException, UploadFile
 
 from app.config import PROJECTS_DIR
 from app.db.json_db import (
@@ -13,7 +13,9 @@ from app.db.json_db import (
     save_project,
 )
 from app.models.project import (
+    AspectRatio,
     Chapter,
+    CompileMode,
     Project,
     ProjectCreate,
     ProjectSummary,
@@ -35,6 +37,8 @@ def api_list_projects():
             status=p.status,
             chapter_count=len(p.chapters),
             character_count=len(p.character_ids),
+            aspect_ratio=p.aspect_ratio,
+            compile_mode=p.compile_mode,
             created_at=p.created_at,
         )
         for p in projects
@@ -44,7 +48,13 @@ def api_list_projects():
 @router.post("", status_code=201)
 def api_create_project(body: ProjectCreate):
     slug = body.title.lower().replace(" ", "-").replace("/", "-")[:48]
-    project = Project(title=body.title, author=body.author, slug=slug)
+    project = Project(
+        title=body.title,
+        author=body.author,
+        slug=slug,
+        aspect_ratio=body.aspect_ratio,
+        compile_mode=body.compile_mode,
+    )
     save_project(project)
 
     project_dir = PROJECTS_DIR / slug
@@ -73,7 +83,11 @@ def api_delete_project(project_id: str):
 
 
 @router.post("/upload", status_code=201)
-async def api_upload_project(file: UploadFile):
+async def api_upload_project(
+    file: UploadFile,
+    aspect_ratio: str = Form("16:9"),
+    compile_mode: str = Form("slideshow"),
+):
     ext = Path(file.filename or "file.txt").suffix.lower()
     if ext not in (".txt", ".pdf"):
         raise HTTPException(400, "Only .txt and .pdf files are supported")
@@ -88,7 +102,10 @@ async def api_upload_project(file: UploadFile):
     content = await file.read()
     file_path.write_bytes(content)
 
-    project = Project(title=title, slug=slug)
+    ar = AspectRatio(aspect_ratio)
+    mode = CompileMode(compile_mode)
+
+    project = Project(title=title, slug=slug, aspect_ratio=ar, compile_mode=mode)
     save_project(project)
 
     (project_dir / "characters").mkdir(exist_ok=True)
