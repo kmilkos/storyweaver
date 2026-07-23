@@ -152,7 +152,10 @@ tailwind.config = {
         </div>
         <div class="h-px w-full bg-outline-variant/10"></div>
         <div class="space-y-2">
-          <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Image Prompt</label>
+          <div class="flex items-center justify-between">
+            <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Image Prompt</label>
+            <button id="regenerate-prompt-btn" onclick="regenerateImagePrompt()" class="text-primary font-label-sm text-label-sm flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">refresh</span> Regenerate</button>
+          </div>
           <textarea id="prompt-input" class="w-full h-24 bg-surface-container-low border border-outline-variant/40 rounded-lg p-3 font-body-sm text-on-surface focus:outline-none focus:border-primary resize-none" placeholder="AI image prompt..."></textarea>
         </div>
         <div class="h-px w-full bg-outline-variant/10"></div>
@@ -423,6 +426,24 @@ async function generateImage() {
 async function regenerateImage() {
   scenes[currentScene].image_path = '';
   await generateImage();
+}
+
+async function regenerateImagePrompt() {
+  const s = scenes[currentScene];
+  if (!s) return;
+  const btn = document.getElementById('regenerate-prompt-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin">progress_activity</span> Regenerating...';
+  try {
+    const r = await fetch(`/api/projects/${projectId}/scenes/${s.id}/generate-image-prompt`, { method: 'POST' });
+    if (!r.ok) { const e = await r.json(); alert(e.detail || 'Failed'); return; }
+    const data = await r.json();
+    document.getElementById('prompt-input').value = data.image_prompt;
+    s.image_prompt = data.image_prompt;
+    addLog(`Regenerated image prompt for Scene ${s.order}`);
+  } catch (e) { alert('Failed. Check API key.'); }
+  btn.disabled = false;
+  btn.innerHTML = '<span class="material-symbols-outlined text-[14px]">refresh</span> Regenerate';
 }
 
 async function generateAudio() {
