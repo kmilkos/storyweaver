@@ -115,7 +115,13 @@ async def api_upload_project(
     ar = AspectRatio(aspect_ratio)
     mode = CompileMode(compile_mode)
 
-    project = Project(title=title, slug=slug, aspect_ratio=ar, compile_mode=mode)
+    project = Project(
+        title=title,
+        slug=slug,
+        aspect_ratio=ar,
+        compile_mode=mode,
+        chapters=[Chapter(title="Chapter 1", order=1)],
+    )
     save_project(project)
 
     (project_dir / "characters").mkdir(exist_ok=True)

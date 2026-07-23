@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 
 from app.config import PROJECTS_DIR
 from app.db.json_db import save_project
-from app.models.project import AspectRatio, CompileMode, Project
+from app.models.project import AspectRatio, Chapter, CompileMode, Project
 from app.services.story_generator import generate_story
 
 router = APIRouter(prefix="/api/generate", tags=["generate"])
@@ -65,6 +65,7 @@ def api_generate_story(body: GenerateRequest):
         slug=slug,
         aspect_ratio=body.aspect_ratio,
         compile_mode=body.compile_mode,
+        chapters=[Chapter(title="Chapter 1", order=1)],
     )
     save_project(project)
 
