@@ -42,9 +42,22 @@ def _generate_gemini(prompt: str, output_path: Path) -> str:
         raise ValueError("Gemini returned no candidates. The prompt may have been blocked.")
 
     for candidate in response.candidates:
-        if candidate.finish_reason and candidate.finish_reason != 1:
-            reason = getattr(candidate, "finish_reason", "unknown")
-            raise ValueError(f"Gemini blocked the request (finish_reason={reason}). Try a different prompt.")
+        reason = candidate.finish_reason
+        if reason and str(reason) != "FinishReason.STOP":
+            hints = {
+                "IMAGE_SAFETY": "The image was blocked by safety filters.",
+                "IMAGE_PROHIBITED_CONTENT": "The image was blocked: prohibited content detected.",
+                "IMAGE_RECITATION": "The image may resemble copyrighted material.",
+                "IMAGE_OTHER": "Gemini's image model rejected this prompt.",
+                "SAFETY": "The prompt was blocked by safety filters.",
+                "PROHIBITED_CONTENT": "The prompt contains prohibited content.",
+                "RECITATION": "The prompt resembles copyrighted material.",
+            }
+            hint = hints.get(str(reason).replace("FinishReason.", ""), "")
+            raise ValueError(
+                f"Gemini blocked this prompt (reason: {reason}). "
+                f"{hint} Try rewording to avoid real names, brands, or copyrighted content."
+            )
         if not candidate.content:
             continue
         for part in candidate.content.parts:
@@ -52,7 +65,7 @@ def _generate_gemini(prompt: str, output_path: Path) -> str:
                 output_path.write_bytes(part.inline_data.data)
                 return str(output_path)
 
-    raise ValueError("Gemini returned no image data in the response. The prompt may have been blocked by safety filters.")
+    raise ValueError("Gemini returned no image data in the response.")
 
 
 def _generate_stability(prompt: str, output_path: Path, width: int, height: int) -> str:
