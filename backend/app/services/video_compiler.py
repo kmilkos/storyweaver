@@ -48,7 +48,7 @@ def compile_video(
         fps=fps,
         codec="libx264",
         audio_codec="aac",
-        preset="medium",
+        preset="ultrafast",
         logger=None,
     )
 
