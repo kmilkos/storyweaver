@@ -77,8 +77,18 @@ def api_get_project(project_id: str):
 
 @router.delete("/{project_id}")
 def api_delete_project(project_id: str):
+    project = get_project(project_id)
+    if not project:
+        raise HTTPException(404, "Project not found")
+
+    import shutil
+    project_dir = PROJECTS_DIR / project.slug
+    if project_dir.exists():
+        shutil.rmtree(project_dir)
+
     if not delete_project(project_id):
         raise HTTPException(404, "Project not found")
+
     return {"ok": True}
 
 

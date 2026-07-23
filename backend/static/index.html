@@ -262,7 +262,10 @@ async function loadProjects() {
       card.innerHTML = `
         <div class="w-full aspect-video relative overflow-hidden bg-surface-container flex items-center justify-center">
           <span class="material-symbols-outlined text-6xl text-outline/30">auto_stories</span>
-          <div class="absolute top-3 right-3">
+          <div class="absolute top-3 right-3 flex gap-2">
+            <button onclick="event.stopPropagation();deleteProject('${p.id}','${p.title}')" class="bg-surface-container-low/80 backdrop-blur px-2 py-1 rounded font-label-sm text-label-sm text-error hover:bg-error-container/30 transition-colors border border-error/30" title="Delete project">
+              <span class="material-symbols-outlined text-[14px]">delete</span>
+            </button>
             <span class="bg-surface-container-low/80 backdrop-blur px-2 py-1 rounded font-label-sm text-label-sm uppercase border ${statusClass}">${p.status.replace('_', ' ')}</span>
           </div>
         </div>
@@ -402,6 +405,22 @@ function setLoading(loading) {
   btn.style.opacity = loading ? '0.7' : '1';
   icon.textContent = loading ? 'hourglass_top' : 'add';
   label.textContent = loading ? 'Uploading...' : 'New Project';
+}
+
+async function deleteProject(id, title) {
+  if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
+  try {
+    const res = await fetch(`/api/projects/${id}`, { method: 'DELETE' });
+    if (res.ok) {
+      addLog(`Deleted "${title}"`);
+      await loadProjects();
+    } else {
+      const err = await res.json();
+      alert('Delete failed: ' + (err.detail || res.statusText));
+    }
+  } catch (e) {
+    alert('Delete failed. Is the backend running?');
+  }
 }
 
 function addLog(msg) {
