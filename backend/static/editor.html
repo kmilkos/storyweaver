@@ -236,7 +236,7 @@ async function init() {
     document.getElementById('nav-characters').href = `/static/characters.html?id=${projectId}`;
     document.getElementById('breadcrumb-project').href = `/static/project.html?id=${projectId}`;
     if (chapterId) document.getElementById('breadcrumb-scene').textContent = 'All scenes (chapter filter)';
-    document.getElementById('narration-input').addEventListener('input', updateWordEstimate);
+    document.getElementById('narration-input').addEventListener('input', autoCalcDuration);
     document.getElementById('duration-input').addEventListener('input', updateWordEstimate);
     await loadScenes();
     await loadCharacters();
@@ -300,7 +300,7 @@ function selectScene(index) {
   document.getElementById('voice-select').value = s.voice_id || 'kore';
   document.getElementById('camera-select').value = s.camera_motion || 'slow-zoom';
   document.getElementById('duration-input').value = s.target_seconds || 10;
-  updateWordEstimate();
+  autoCalcDuration();
 
   const img = document.getElementById('preview-image');
   const previewVideo = document.getElementById('preview-video');
@@ -348,13 +348,21 @@ function selectScene(index) {
 
 function updateWordEstimate() {
   const text = document.getElementById('narration-input').value;
-  const sec = parseInt(document.getElementById('duration-input').value) || 10;
   const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  const sec = parseInt(document.getElementById('duration-input').value) || 10;
   const maxWords = Math.round(sec * 2.5);
   const pct = words / maxWords;
   const color = pct > 1 ? 'text-error' : pct > 0.8 ? 'text-tertiary' : 'text-on-surface-variant/60';
-  document.getElementById('word-estimate').textContent = `~${words} words (max ${maxWords} for ${sec}s)`;
+  document.getElementById('word-estimate').textContent = `~${words} words → ${sec}s (${maxWords} max)`;
   document.getElementById('word-estimate').className = `font-label-sm text-label-sm ${color}`;
+}
+
+function autoCalcDuration() {
+  const text = document.getElementById('narration-input').value;
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  const sec = Math.max(5, Math.ceil(words / 2.5));
+  document.getElementById('duration-input').value = sec;
+  updateWordEstimate();
 }
 
 function renderCharacterTags(scene) {
