@@ -106,11 +106,13 @@ body { background-color: #0b1326; color: #dae2fd; }
         <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl" id="project-author"></p>
       </div>
       <div class="flex gap-2" id="project-actions">
-        <button onclick="extractCharacters()" class="px-4 py-2 border border-primary text-primary font-label-md text-label-md uppercase rounded-lg hover:bg-primary/10 transition-colors flex items-center gap-2">
-          <span class="material-symbols-outlined text-[16px]">person_search</span> Extract Characters
+        <button id="extract-btn" onclick="extractCharacters()" class="px-4 py-2 border border-primary text-primary font-label-md text-label-md uppercase rounded-lg hover:bg-primary/10 transition-colors flex items-center gap-2">
+          <span id="extract-icon" class="material-symbols-outlined text-[16px]">person_search</span>
+          <span id="extract-label">Extract Characters</span>
         </button>
-        <button onclick="splitScenes()" class="px-4 py-2 bg-gradient-to-r from-primary-container to-secondary-container text-on-primary-container font-label-md text-label-md uppercase rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2">
-          <span class="material-symbols-outlined text-[16px]">auto_stories</span> Split Scenes
+        <button id="split-btn" onclick="splitScenes()" class="px-4 py-2 bg-gradient-to-r from-primary-container to-secondary-container text-on-primary-container font-label-md text-label-md uppercase rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2">
+          <span id="split-icon" class="material-symbols-outlined text-[16px]">auto_stories</span>
+          <span id="split-label">Split Scenes</span>
         </button>
         <a id="editor-link" href="#" class="px-4 py-2 bg-gradient-to-r from-primary-container to-secondary-container text-on-primary-container font-label-md text-label-md uppercase rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2 hidden">
           <span class="material-symbols-outlined text-[16px]">movie_edit</span> Open Editor
@@ -234,20 +236,48 @@ async function loadCharacters() {
   } catch (e) {}
 }
 
+function setExtracting(loading) {
+  const btn = document.getElementById('extract-btn');
+  const icon = document.getElementById('extract-icon');
+  const label = document.getElementById('extract-label');
+  btn.disabled = loading;
+  btn.style.opacity = loading ? '0.7' : '1';
+  icon.textContent = loading ? 'progress_activity' : 'person_search';
+  if (loading) icon.classList.add('animate-spin');
+  else icon.classList.remove('animate-spin');
+  label.textContent = loading ? 'Extracting...' : 'Extract Characters';
+}
+
+function setSplitting(loading) {
+  const btn = document.getElementById('split-btn');
+  const icon = document.getElementById('split-icon');
+  const label = document.getElementById('split-label');
+  btn.disabled = loading;
+  btn.style.opacity = loading ? '0.7' : '1';
+  icon.textContent = loading ? 'progress_activity' : 'auto_stories';
+  if (loading) icon.classList.add('animate-spin');
+  else icon.classList.remove('animate-spin');
+  label.textContent = loading ? 'Splitting...' : 'Split Scenes';
+}
+
 async function extractCharacters() {
+  setExtracting(true);
   try {
     const r = await fetch(`/api/projects/${projectId}/characters/extract`, { method: 'POST' });
-    if (!r.ok) { const e = await r.json(); alert(e.detail || 'Extraction failed'); return; }
-    loadProject();
+    if (!r.ok) { const e = await r.json(); alert(e.detail || 'Extraction failed'); setExtracting(false); return; }
+    await loadProject();
   } catch (e) { alert('Failed. Is GEMINI_API_KEY set?'); }
+  setExtracting(false);
 }
 
 async function splitScenes() {
+  setSplitting(true);
   try {
     const r = await fetch(`/api/projects/${projectId}/scenes/split`, { method: 'POST' });
-    if (!r.ok) { const e = await r.json(); alert(e.detail || 'Split failed'); return; }
-    loadProject();
+    if (!r.ok) { const e = await r.json(); alert(e.detail || 'Split failed'); setSplitting(false); return; }
+    await loadProject();
   } catch (e) { alert('Failed. Is GEMINI_API_KEY set?'); }
+  setSplitting(false);
 }
 
 async function addCharacter() {
