@@ -1,6 +1,47 @@
+import json
 import re
 
 from app.config import get_env
+
+
+def _call_gemini(prompt: str) -> str:
+    from google import genai
+
+    api_key = get_env("GEMINI_API_KEY")
+    client = genai.Client(api_key=api_key)
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt,
+    )
+    return response.text.strip()
+
+
+def _check_names_safe(names: list[str], narration: str) -> list[str]:
+    names_list = "\n".join(f"- {n}" for n in names)
+    check_prompt = f"""You are a content policy checker for AI video generation (Veo).
+Given a list of character names and the scene narration, determine if using these
+names directly in a video prompt could trigger Veo's "identifiable individuals" policy.
+This policy typically blocks real public figures, celebrities, or well-known people.
+Fictional character names and generic names are usually safe.
+
+Names:
+{names_list}
+
+Scene narration:
+{narration[:500]}
+
+Return a JSON object with key "safe_names" containing only the names that are safe to use,
+and key "unsafe_names" containing names that should be replaced with role descriptions.
+Example: {{"safe_names": ["Dick Jarvis"], "unsafe_names": ["Elon Musk"]}}
+Return ONLY valid JSON, no markdown, no code fences."""
+
+    try:
+        raw = _call_gemini(check_prompt)
+        raw = re.sub(r'```(?:json)?\s*|\s*```', '', raw).strip()
+        result = json.loads(raw)
+        return result.get("safe_names", names)
+    except (json.JSONDecodeError, KeyError):
+        return names
 
 
 def generate_video_prompt(
@@ -15,21 +56,27 @@ def generate_video_prompt(
     if not api_key:
         raise ValueError("GEMINI_API_KEY not configured")
 
-    from google import genai
+    safe_names = _check_names_safe(character_names, narration)
 
-    chars_block = "\n".join(
-        f"- {name}: {desc}"
-        for name, desc in zip(character_names, character_descriptions)
-    ) or "No characters defined."
+    name_role_map = {n: desc for n, desc in zip(character_names, character_descriptions)}
+    role_notes = []
+    for name in character_names:
+        if name in safe_names:
+            role_notes.append(f"- {name}: {name_role_map.get(name, '')}")
+        else:
+            role_notes.append(f"- DO NOT USE THE NAME. Refer to them as: {name_role_map.get(name, 'a character')}")
 
-    prompt = f"""You are an expert video prompt writer for AI video generation (Veo, Sora, etc.).
+    chars_block = "\n".join(role_notes) or "No characters defined."
+
+    prompt_text = f"""You are an expert video prompt writer for AI video generation (Veo, Sora, etc.).
 Given a scene's details, produce a single rich video generation prompt.
 It must describe the visual scene, character actions, and camera motion.
 It MUST also include the exact narration/dialogue text that will be spoken,
 tagged as [NARRATION: ...] at the end of the prompt.
-IMPORTANT: Do NOT use character names directly. Instead, refer to each character
-by their role or a descriptive phrase (e.g. "the astronaut", "the captain",
-"the chemist", "the engineer"). This avoids content policy restrictions.
+
+For characters marked "DO NOT USE THE NAME", you MUST refer to them by their
+role/description instead (e.g. "the astronaut"). For other characters you may
+use their name directly.
 
 Target video duration: {target_seconds} seconds.
 The [NARRATION: ...] text MUST be speakable within {target_seconds} seconds
@@ -37,7 +84,7 @@ The [NARRATION: ...] text MUST be speakable within {target_seconds} seconds
 If the provided narration is too long, condense it to fit the time limit
 while preserving the core meaning and dialogue.
 
-Characters (use their roles, not names):
+Characters:
 {chars_block}
 
 Scene narration:
@@ -53,11 +100,8 @@ Return ONLY the prompt text, no markdown, no code fences, no extra commentary.""
     client = genai.Client(api_key=api_key)
     response = client.models.generate_content(
         model="gemini-2.5-flash",
-        contents=prompt,
+        contents=prompt_text,
     )
     text = response.text.strip()
-
-    for name in sorted(character_names, key=len, reverse=True):
-        text = text.replace(f"@{name}", name)
 
     return text
