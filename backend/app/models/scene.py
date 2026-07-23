@@ -10,7 +10,9 @@ from pydantic import BaseModel, Field
 class SceneStatus(str, Enum):
     draft = "draft"
     image_generated = "image_generated"
+    prompt_generated = "prompt_generated"
     audio_generated = "audio_generated"
+    video_generated = "video_generated"
     complete = "complete"
 
 
@@ -29,6 +31,8 @@ class Scene(BaseModel):
     narration: str = ""
     image_prompt: str = ""
     image_path: str = ""
+    video_prompt: str = ""
+    video_path: str = ""
     audio_path: str = ""
     voice_id: str = "kore"
     camera_motion: CameraMotion = CameraMotion.slow_zoom
@@ -40,6 +44,7 @@ class Scene(BaseModel):
 class SceneUpdate(BaseModel):
     narration: str | None = None
     image_prompt: str | None = None
+    video_prompt: str | None = None
     voice_id: str | None = None
     camera_motion: CameraMotion | None = None
     character_ids: list[str] | None = None

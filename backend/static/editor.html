@@ -154,6 +154,25 @@ tailwind.config = {
         </div>
         <div class="h-px w-full bg-outline-variant/10"></div>
         <div class="space-y-2">
+          <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Video Prompt</label>
+          <textarea id="video-prompt-input" class="w-full h-20 bg-surface-container-low border border-outline-variant/40 rounded-lg p-3 font-body-sm text-on-surface focus:outline-none focus:border-primary resize-none" placeholder="Generate a video prompt for Veo/Sora..." readonly></textarea>
+          <div class="flex gap-2">
+            <button onclick="generateVideoPrompt()" class="text-primary font-label-sm text-label-sm flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">auto_awesome</span> Generate</button>
+            <button onclick="copyVideoPrompt()" class="text-primary font-label-sm text-label-sm flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">content_copy</span> Copy</button>
+          </div>
+        </div>
+        <div class="h-px w-full bg-outline-variant/10"></div>
+        <div class="space-y-2">
+          <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Video</label>
+          <div id="video-upload-area" class="border-2 border-dashed border-outline-variant/40 rounded-lg p-4 text-center cursor-pointer hover:border-primary/50 transition-colors" onclick="document.getElementById('video-input').click()">
+            <span class="material-symbols-outlined text-3xl text-outline/40">videocam</span>
+            <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Upload a generated video</p>
+            <input type="file" id="video-input" accept="video/*" class="hidden" onchange="uploadVideo(this)">
+          </div>
+          <video id="video-preview" class="w-full rounded-lg hidden" controls></video>
+        </div>
+        <div class="h-px w-full bg-outline-variant/10"></div>
+        <div class="space-y-2">
           <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Voice</label>
           <div class="relative">
             <select id="voice-select" class="w-full appearance-none bg-surface-container-low border border-outline-variant/40 rounded-lg p-3 pl-10 font-body-sm text-on-surface focus:outline-none focus:border-primary cursor-pointer"></select>
@@ -261,6 +280,8 @@ function selectScene(index) {
   document.getElementById('voice-select').value = s.voice_id || 'kore';
   document.getElementById('camera-select').value = s.camera_motion || 'slow-zoom';
 
+  document.getElementById('video-prompt-input').value = s.video_prompt || '';
+
   const img = document.getElementById('preview-image');
   const placeholder = document.getElementById('preview-placeholder');
   if (s.image_path) {
@@ -270,6 +291,17 @@ function selectScene(index) {
   } else {
     img.classList.add('hidden');
     placeholder.classList.remove('hidden');
+  }
+
+  const video = document.getElementById('video-preview');
+  const uploadArea = document.getElementById('video-upload-area');
+  if (s.video_path) {
+    video.src = s.video_path;
+    video.classList.remove('hidden');
+    uploadArea.classList.add('hidden');
+  } else {
+    video.classList.add('hidden');
+    uploadArea.classList.remove('hidden');
   }
 
   renderCharacterTags(s);
@@ -344,6 +376,45 @@ async function generateAudio() {
     s.status = 'audio_generated';
     addLog(`Generated audio for Scene ${s.order}`);
   } catch (e) { alert('Audio generation failed. Check API key.'); }
+}
+
+async function generateVideoPrompt() {
+  const s = scenes[currentScene];
+  await saveScene();
+  try {
+    const r = await fetch(`/api/projects/${projectId}/scenes/${s.id}/generate-video-prompt`, { method: 'POST' });
+    if (!r.ok) { const e = await r.json(); alert(e.detail || 'Generation failed'); return; }
+    const data = await r.json();
+    s.video_prompt = data.video_prompt;
+    s.status = 'prompt_generated';
+    document.getElementById('video-prompt-input').value = s.video_prompt;
+    addLog(`Generated video prompt for Scene ${s.order}`);
+  } catch (e) { alert('Video prompt generation failed. Check API key.'); }
+}
+
+function copyVideoPrompt() {
+  const input = document.getElementById('video-prompt-input');
+  input.select();
+  navigator.clipboard.writeText(input.value);
+  addLog('Video prompt copied');
+}
+
+async function uploadVideo(input) {
+  const s = scenes[currentScene];
+  if (!input.files.length) return;
+  const file = input.files[0];
+  if (!file.type.startsWith('video/')) { alert('Please select a video file.'); return; }
+  const form = new FormData();
+  form.append('file', file);
+  try {
+    const r = await fetch(`/api/projects/${projectId}/scenes/${s.id}/upload-video`, { method: 'POST', body: form });
+    if (!r.ok) { const e = await r.json(); alert(e.detail || 'Upload failed'); return; }
+    const data = await r.json();
+    s.video_path = data.video_path;
+    s.status = 'video_generated';
+    addLog(`Uploaded video for Scene ${s.order}`);
+    selectScene(currentScene);
+  } catch (e) { alert('Video upload failed.'); }
 }
 
 async function previewVoice() {
