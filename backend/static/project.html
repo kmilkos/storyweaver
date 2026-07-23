@@ -66,7 +66,7 @@ body { background-color: #0b1326; color: #dae2fd; }
   <div class="flex flex-col flex-1 gap-1 px-2">
     <a href="/static/index.html" class="flex items-center gap-4 py-2 px-4 text-on-surface-variant hover:bg-surface-bright/20 transition-all rounded-lg"><span class="material-symbols-outlined">dashboard</span><span class="font-body-md text-body-md">Dashboard</span></a>
     <a href="/static/index.html" class="flex items-center gap-4 py-2 px-4 text-primary border-l-4 border-primary bg-primary-container/10 rounded-r-lg"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">folder_open</span><span class="font-body-md text-body-md font-bold">Projects</span></a>
-    <a class="flex items-center gap-4 py-2 px-4 text-on-surface-variant hover:bg-surface-bright/20 transition-all rounded-lg"><span class="material-symbols-outlined">person_book</span><span class="font-body-md text-body-md">Characters</span></a>
+    <a href="/static/characters.html?id=" class="flex items-center gap-4 py-2 px-4 text-on-surface-variant hover:bg-surface-bright/20 transition-all rounded-lg" id="nav-characters"><span class="material-symbols-outlined">person_book</span><span class="font-body-md text-body-md">Characters</span></a>
     <a class="flex items-center gap-4 py-2 px-4 text-on-surface-variant hover:bg-surface-bright/20 transition-all rounded-lg"><span class="material-symbols-outlined">movie_edit</span><span class="font-body-md text-body-md">Scenes</span></a>
     <a href="/static/settings.html" class="flex items-center gap-4 py-2 px-4 text-on-surface-variant hover:bg-surface-bright/20 transition-all rounded-lg"><span class="material-symbols-outlined">settings</span><span class="font-body-md text-body-md">Settings</span></a>
   </div>
@@ -189,6 +189,7 @@ let project = null;
 async function loadProject() {
   if (!projectId) { document.getElementById('project-title').textContent = 'No project ID'; return; }
   try {
+    document.getElementById('nav-characters').href = `/static/characters.html?id=${projectId}`;
     const r = await fetch(`/api/projects/${projectId}`);
     project = await r.json();
     document.getElementById('project-title').textContent = project.title;

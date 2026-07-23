@@ -69,7 +69,7 @@ tailwind.config = {
   <nav class="flex-1 overflow-y-auto px-2 mt-4 space-y-1">
     <a href="/static/index.html" class="flex items-center gap-4 py-2 px-4 text-on-surface-variant rounded hover:bg-surface-bright/20 transition-all"><span class="material-symbols-outlined">dashboard</span><span class="font-body-sm text-body-sm">Dashboard</span></a>
     <a href="/static/index.html" class="flex items-center gap-4 py-2 px-4 text-on-surface-variant rounded hover:bg-surface-bright/20 transition-all"><span class="material-symbols-outlined">folder_open</span><span class="font-body-sm text-body-sm">Projects</span></a>
-    <a href="/static/project.html?id=" class="flex items-center gap-4 py-2 px-4 text-on-surface-variant rounded hover:bg-surface-bright/20 transition-all" id="nav-project"><span class="material-symbols-outlined">person_book</span><span class="font-body-sm text-body-sm">Characters</span></a>
+    <a href="/static/characters.html?id=" class="flex items-center gap-4 py-2 px-4 text-on-surface-variant rounded hover:bg-surface-bright/20 transition-all" id="nav-characters"><span class="material-symbols-outlined">person_book</span><span class="font-body-sm text-body-sm">Characters</span></a>
     <a class="flex items-center gap-4 py-2 px-4 text-primary border-l-4 border-primary bg-primary-container/10 rounded-r transition-all"><span class="material-symbols-outlined">movie_edit</span><span class="font-body-sm text-body-sm font-medium">Scenes</span></a>
     <a href="/static/settings.html" class="flex items-center gap-4 py-2 px-4 text-on-surface-variant rounded hover:bg-surface-bright/20 transition-all"><span class="material-symbols-outlined">settings</span><span class="font-body-sm text-body-sm">Settings</span></a>
   </nav>
@@ -215,7 +215,7 @@ let currentScene = 0;
 async function init() {
   await loadVoices();
   if (projectId) {
-    document.getElementById('nav-project').href = `/static/project.html?id=${projectId}`;
+    document.getElementById('nav-characters').href = `/static/characters.html?id=${projectId}`;
     document.getElementById('breadcrumb-project').href = `/static/project.html?id=${projectId}`;
     if (chapterId) document.getElementById('breadcrumb-scene').textContent = 'All scenes (chapter filter)';
     await loadScenes();

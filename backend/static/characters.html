@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Characters - StoryWeaver</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "background": "#0b1326", "surface": "#0b1326", "surface-dim": "#0b1326",
+        "surface-bright": "#31394d", "surface-container": "#171f33",
+        "surface-container-low": "#131b2e", "surface-container-lowest": "#060e20",
+        "surface-container-high": "#222a3d", "surface-container-highest": "#2d3449",
+        "surface-variant": "#2d3449", "on-surface": "#dae2fd",
+        "on-surface-variant": "#cbc3d7", "on-background": "#dae2fd",
+        "primary": "#d0bcff", "primary-container": "#6c3bd5",
+        "on-primary": "#3b0091", "on-primary-container": "#dfd1ff",
+        "primary-fixed": "#e9ddff", "primary-fixed-dim": "#d0bcff",
+        "secondary": "#fbabff", "secondary-container": "#ae05c6",
+        "tertiary": "#4fdbc8", "tertiary-container": "#006a5f",
+        "tertiary-fixed": "#71f8e4", "tertiary-fixed-dim": "#4fdbc8",
+        "error": "#ffb4ab", "error-container": "#93000a",
+        "outline": "#958ea0", "outline-variant": "#494454",
+        "inverse-primary": "#6d3cd6", "inverse-surface": "#dae2fd",
+      },
+      fontFamily: {
+        "display-md": ["Space Grotesk"], "headline-md": ["Space Grotesk"],
+        "body-md": ["Inter"], "body-sm": ["Inter"],
+        "label-md": ["JetBrains Mono"], "label-sm": ["JetBrains Mono"],
+      },
+      fontSize: {
+        "headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+        "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+        "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "500" }],
+        "label-sm": ["10px", { lineHeight: "14px", letterSpacing: "0.05em", fontWeight: "500" }],
+      },
+      spacing: { "gutter": "24px", "stack_sm": "8px", "stack_md": "16px", "stack_lg": "32px" },
+      borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem" }
+    }
+  }
+}
+</script>
+<style>
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: rgba(208,188,255,0.05); border-radius: 9999px; }
+::-webkit-scrollbar-thumb { background: rgba(108,59,213,0.5); border-radius: 9999px; }
+.glass-panel { background: rgba(23, 31, 51, 0.5); backdrop-filter: blur(24px); border: 1px solid rgba(73, 68, 84, 0.3); }
+.glass-card { background: rgba(45, 52, 73, 0.4); backdrop-filter: blur(16px); border: 1px solid rgba(208,188,255,0.08); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
+.primary-gradient-bg { background: linear-gradient(135deg, #6c3bd5 0%, #ae05c6 100%); }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.animate-spin { animation: spin 1s linear infinite; display: inline-block; }
+</style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex overflow-hidden font-body-md">
+<aside class="fixed left-0 top-0 h-full w-[260px] bg-surface-container/30 backdrop-blur-xl border-r border-outline-variant/10 flex flex-col py-8 z-50">
+  <div class="px-6 mb-8 flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+    <span class="material-symbols-outlined text-primary text-[32px]">auto_awesome</span>
+    <div>
+      <h1 class="font-headline-md text-headline-md font-bold text-primary-fixed-dim tracking-tight">StoryWeaver</h1>
+      <p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Creative Studio</p>
+    </div>
+  </div>
+  <nav class="flex-1 overflow-y-auto px-2 mt-4 space-y-1">
+    <a href="/static/index.html" class="flex items-center gap-4 py-2 px-4 text-on-surface-variant rounded hover:bg-surface-bright/20 transition-all"><span class="material-symbols-outlined">dashboard</span><span class="font-body-sm text-body-sm">Dashboard</span></a>
+    <a href="/static/project.html?id=" class="flex items-center gap-4 py-2 px-4 text-on-surface-variant rounded hover:bg-surface-bright/20 transition-all" id="nav-project"><span class="material-symbols-outlined">folder_open</span><span class="font-body-sm text-body-sm">Projects</span></a>
+    <a class="flex items-center gap-4 py-2 px-4 text-primary border-l-4 border-primary bg-primary-container/10 rounded-r transition-all"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person_book</span><span class="font-body-sm text-body-sm font-medium">Characters</span></a>
+    <a href="/static/editor.html?id=" class="flex items-center gap-4 py-2 px-4 text-on-surface-variant rounded hover:bg-surface-bright/20 transition-all" id="nav-editor"><span class="material-symbols-outlined">movie_edit</span><span class="font-body-sm text-body-sm">Scenes</span></a>
+    <a href="/static/settings.html" class="flex items-center gap-4 py-2 px-4 text-on-surface-variant rounded hover:bg-surface-bright/20 transition-all"><span class="material-symbols-outlined">settings</span><span class="font-body-sm text-body-sm">Settings</span></a>
+  </nav>
+  <div id="log-section" class="px-3 py-3 mx-3 border-t border-outline-variant/10 hidden">
+    <div class="flex items-center justify-between mb-2">
+      <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Activity</span>
+      <button onclick="clearLog()" class="text-on-surface-variant/50 hover:text-primary text-[11px] font-label-sm">Clear</button>
+    </div>
+    <div id="log-list" class="space-y-1 max-h-[160px] overflow-y-auto"></div>
+  </div>
+  <div class="px-2 mt-auto pt-4 border-t border-outline-variant/10">
+    <a class="flex items-center gap-4 py-2 px-4 text-on-surface-variant rounded hover:bg-surface-bright/20 transition-all"><span class="material-symbols-outlined text-[20px]">help</span><span class="font-body-sm text-body-sm">Help</span></a>
+    <a class="flex items-center gap-4 py-2 px-4 text-on-surface-variant rounded hover:bg-surface-bright/20 transition-all"><span class="material-symbols-outlined text-[20px]">logout</span><span class="font-body-sm text-body-sm">Sign Out</span></a>
+  </div>
+</aside>
+
+<main class="ml-[260px] flex-1 flex flex-col h-screen relative">
+  <header class="h-[56px] w-full flex items-center justify-between px-6 border-b border-outline-variant/10 bg-surface/50 backdrop-blur-md z-40 shrink-0">
+    <div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+      <a href="/static/index.html" class="hover:text-primary transition-colors">Dashboard</a>
+      <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+      <a href="/static/project.html?id=" class="hover:text-primary transition-colors" id="breadcrumb-project">Project</a>
+      <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+      <span class="text-primary font-medium">Characters</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <button onclick="showAddModal()" class="primary-gradient-bg text-on-primary-fixed font-label-md text-label-md uppercase px-4 py-2 rounded hover:shadow-[0_0_15px_rgba(208,188,255,0.3)] transition-all flex items-center gap-2">
+        <span class="material-symbols-outlined text-[16px]">add</span> Add Character
+      </button>
+      <button onclick="extractCharacters()" class="border border-primary text-primary font-label-md text-label-md uppercase px-4 py-2 rounded hover:bg-primary/10 transition-all flex items-center gap-2">
+        <span class="material-symbols-outlined text-[16px]">auto_awesome</span> Extract
+      </button>
+    </div>
+  </header>
+
+  <div class="flex-1 overflow-y-auto p-6">
+    <div class="max-w-5xl mx-auto space-y-6">
+      <div id="no-project" class="text-center py-20 hidden">
+        <span class="material-symbols-outlined text-6xl text-outline/30">person_book</span>
+        <p class="font-headline-md text-headline-md text-on-surface-variant mt-4">Select a project to manage characters</p>
+        <a href="/static/index.html" class="inline-block mt-4 px-6 py-2 primary-gradient-bg rounded-lg text-on-primary-fixed font-label-md">Go to Dashboard</a>
+      </div>
+
+      <div id="project-content" class="hidden">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="font-headline-md text-headline-md text-on-surface" id="page-title">Characters</h2>
+            <p class="font-body-sm text-body-sm text-on-surface-variant mt-1" id="char-subtitle">0 characters across 0 roles</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-3" id="stats-row"></div>
+
+        <div class="flex items-center justify-between">
+          <div class="flex gap-2" id="role-filter">
+            <button onclick="setRoleFilter('all')" class="role-filter-btn active px-3 py-1.5 rounded-lg font-label-sm text-label-sm border transition-colors" data-role="all">All</button>
+            <button onclick="setRoleFilter('protagonist')" class="role-filter-btn px-3 py-1.5 rounded-lg font-label-sm text-label-sm border border-outline-variant/30 text-on-surface-variant hover:border-primary/50 transition-colors" data-role="protagonist">Protagonists</button>
+            <button onclick="setRoleFilter('antagonist')" class="role-filter-btn px-3 py-1.5 rounded-lg font-label-sm text-label-sm border border-outline-variant/30 text-on-surface-variant hover:border-primary/50 transition-colors" data-role="antagonist">Antagonists</button>
+            <button onclick="setRoleFilter('supporting')" class="role-filter-btn px-3 py-1.5 rounded-lg font-label-sm text-label-sm border border-outline-variant/30 text-on-surface-variant hover:border-primary/50 transition-colors" data-role="supporting">Supporting</button>
+            <button onclick="setRoleFilter('minor')" class="role-filter-btn px-3 py-1.5 rounded-lg font-label-sm text-label-sm border border-outline-variant/30 text-on-surface-variant hover:border-primary/50 transition-colors" data-role="minor">Minor</button>
+          </div>
+          <span class="font-label-sm text-label-sm text-on-surface-variant" id="filter-count"></span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="char-grid"></div>
+        <div id="empty-state" class="hidden text-center py-16">
+          <span class="material-symbols-outlined text-5xl text-outline/20">person_off</span>
+          <p class="font-body-md text-body-md text-on-surface-variant mt-3">No characters yet. Extract from manuscript or add manually.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="char-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm hidden" onclick="if(event.target===this)closeModal()">
+  <div class="bg-surface-container-high border border-outline-variant/20 rounded-xl w-full max-w-lg mx-4 max-h-[80vh] overflow-y-auto shadow-2xl" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between p-5 border-b border-outline-variant/10">
+      <h3 class="font-headline-md text-headline-md text-on-surface" id="modal-title">Add Character</h3>
+      <button onclick="closeModal()" class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="p-5 space-y-4">
+      <input type="hidden" id="edit-char-id">
+      <div class="space-y-1.5">
+        <label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Name</label>
+        <input id="char-name-input" class="w-full bg-surface-container-low border border-outline-variant/40 rounded-lg p-3 font-body-sm text-on-surface focus:outline-none focus:border-primary" placeholder="Character name">
+      </div>
+      <div class="space-y-1.5">
+        <label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Role</label>
+        <select id="char-role-input" class="w-full bg-surface-container-low border border-outline-variant/40 rounded-lg p-3 font-body-sm text-on-surface focus:outline-none focus:border-primary cursor-pointer">
+          <option value="protagonist">Protagonist</option>
+          <option value="antagonist">Antagonist</option>
+          <option value="supporting">Supporting</option>
+          <option value="minor">Minor</option>
+        </select>
+      </div>
+      <div class="space-y-1.5">
+        <label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Description</label>
+        <textarea id="char-desc-input" class="w-full h-24 bg-surface-container-low border border-outline-variant/40 rounded-lg p-3 font-body-sm text-on-surface focus:outline-none focus:border-primary resize-none" placeholder="Physical appearance, personality, backstory..."></textarea>
+      </div>
+      <div class="space-y-1.5">
+        <label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Reference Prompt</label>
+        <textarea id="char-ref-input" class="w-full h-20 bg-surface-container-low border border-outline-variant/40 rounded-lg p-3 font-body-sm text-on-surface focus:outline-none focus:border-primary resize-none" placeholder="AI image prompt for character reference..."></textarea>
+      </div>
+    </div>
+    <div class="flex gap-3 p-5 border-t border-outline-variant/10">
+      <button onclick="closeModal()" class="flex-1 border border-outline-variant/40 text-on-surface-variant font-label-md text-label-md uppercase py-2.5 rounded hover:bg-surface-bright/20 transition-colors">Cancel</button>
+      <button id="modal-save-btn" onclick="saveCharacter()" class="flex-1 primary-gradient-bg text-on-primary-fixed font-label-md text-label-md uppercase py-2.5 rounded hover:shadow-[0_0_15px_rgba(208,188,255,0.3)] transition-all">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const projectId = params.get('id');
+let project = null;
+let characters = [];
+let currentFilter = 'all';
+
+async function init() {
+  setupNav();
+  if (!projectId) {
+    document.getElementById('no-project').classList.remove('hidden');
+    return;
+  }
+  document.getElementById('project-content').classList.remove('hidden');
+  try {
+    const r = await fetch(`/api/projects/${projectId}`);
+    project = await r.json();
+    document.getElementById('breadcrumb-project').textContent = project.title;
+    document.getElementById('breadcrumb-project').href = `/static/project.html?id=${projectId}`;
+    document.getElementById('page-title').textContent = `Characters — ${project.title}`;
+    updateNavProjectId();
+    await loadCharacters();
+  } catch (e) {
+    document.getElementById('page-title').textContent = 'Failed to load project';
+  }
+}
+
+function setupNav() {
+  document.getElementById('nav-project').href = `/static/project.html?id=${projectId || ''}`;
+  document.getElementById('nav-editor').href = `/static/editor.html?id=${projectId || ''}`;
+}
+
+function updateNavProjectId() {
+  const pid = projectId || project?.id || '';
+  document.getElementById('nav-project').href = `/static/project.html?id=${pid}`;
+  document.getElementById('nav-editor').href = `/static/editor.html?id=${pid}`;
+}
+
+async function loadCharacters() {
+  try {
+    const r = await fetch(`/api/projects/${projectId}/characters`);
+    characters = await r.json();
+    renderStats();
+    renderGrid();
+  } catch (e) {}
+}
+
+function renderStats() {
+  const counts = { protagonist: 0, antagonist: 0, supporting: 0, minor: 0 };
+  characters.forEach(c => { if (counts[c.role] !== undefined) counts[c.role]++; });
+  document.getElementById('char-subtitle').textContent = `${characters.length} character${characters.length !== 1 ? 's' : ''} · ${Object.values(counts).filter(v => v > 0).length} role${Object.values(counts).filter(v => v > 0).length !== 1 ? 's' : ''}`;
+
+  const roleMeta = {
+    protagonist: { label: 'Protagonists', icon: 'star', color: 'text-tertiary-fixed-dim bg-tertiary-container/30 border-tertiary/20' },
+    antagonist: { label: 'Antagonists', icon: 'shield', color: 'text-error bg-error-container/30 border-error/20' },
+    supporting: { label: 'Supporting', icon: 'group', color: 'text-secondary bg-secondary/10 border-secondary/20' },
+    minor: { label: 'Minor', icon: 'more_horiz', color: 'text-on-surface-variant bg-surface-bright/50 border-outline-variant/30' },
+  };
+  document.getElementById('stats-row').innerHTML = Object.entries(roleMeta).map(([role, meta]) => `
+    <div class="glass-card rounded-xl p-4 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-lg ${meta.color} flex items-center justify-center">
+        <span class="material-symbols-outlined text-[20px]">${meta.icon}</span>
+      </div>
+      <div>
+        <p class="font-headline-md text-headline-md text-on-surface">${counts[role]}</p>
+        <p class="font-label-sm text-label-sm text-on-surface-variant">${meta.label}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderGrid() {
+  const filtered = currentFilter === 'all' ? characters : characters.filter(c => c.role === currentFilter);
+  document.getElementById('filter-count').textContent = `${filtered.length} of ${characters.length}`;
+
+  const grid = document.getElementById('char-grid');
+  const empty = document.getElementById('empty-state');
+  if (!filtered.length) {
+    grid.innerHTML = '';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+
+  const roleColors = {
+    protagonist: 'text-tertiary-fixed-dim bg-tertiary-container/30 border-tertiary/20',
+    antagonist: 'text-error bg-error-container/30 border-error/20',
+    supporting: 'text-secondary bg-secondary/10 border-secondary/20',
+    minor: 'text-on-surface-variant bg-surface-bright/50 border-outline-variant/30',
+  };
+
+  grid.innerHTML = filtered.map((c, idx) => {
+    const initial = c.name ? c.name[0].toUpperCase() : '?';
+    const hue = (idx * 47) % 360;
+    return `<div class="glass-card rounded-xl p-4 flex flex-col gap-3 hover:border-primary/30 transition-all group">
+      <div class="flex items-start justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full flex items-center justify-center shrink-0 border-2" style="background: hsla(${hue}, 60%, 30%, 0.4); border-color: hsla(${hue}, 70%, 60%, 0.5);">
+            <span class="text-on-surface font-headline-md font-bold" style="color: hsla(${hue}, 80%, 75%, 1);">${initial}</span>
+          </div>
+          <div>
+            <h3 class="font-body-md text-body-md text-on-surface font-medium">${c.name}</h3>
+            <span class="font-label-sm text-label-sm px-2 py-0.5 rounded border ${roleColors[c.role] || roleColors.supporting}">${c.role}</span>
+          </div>
+        </div>
+        <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button onclick="showEditModal('${c.id}')" class="w-8 h-8 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-bright/30 transition-all flex items-center justify-center"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+          <button onclick="deleteCharacter('${c.id}')" class="w-8 h-8 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/30 transition-all flex items-center justify-center"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+        </div>
+      </div>
+      <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">${c.description || '<span class="italic opacity-50">No description</span>'}</p>
+      ${c.reference_prompt ? `<div class="bg-surface-container-low/50 border border-outline-variant/20 rounded-lg p-2.5">
+        <p class="font-label-sm text-label-sm text-on-surface-variant/60 uppercase tracking-wider mb-1">Reference Prompt</p>
+        <p class="font-body-sm text-body-sm text-on-surface-variant text-[13px] leading-relaxed line-clamp-2">${c.reference_prompt}</p>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function setRoleFilter(role) {
+  currentFilter = role;
+  document.querySelectorAll('.role-filter-btn').forEach(b => {
+    const isActive = b.dataset.role === role;
+    b.className = `role-filter-btn px-3 py-1.5 rounded-lg font-label-sm text-label-sm border transition-colors ${isActive ? 'bg-primary-container/20 border-primary text-primary' : 'border-outline-variant/30 text-on-surface-variant hover:border-primary/50'}`;
+  });
+  renderGrid();
+}
+
+function showAddModal() {
+  document.getElementById('modal-title').textContent = 'Add Character';
+  document.getElementById('modal-save-btn').textContent = 'Add Character';
+  document.getElementById('edit-char-id').value = '';
+  document.getElementById('char-name-input').value = '';
+  document.getElementById('char-role-input').value = 'supporting';
+  document.getElementById('char-desc-input').value = '';
+  document.getElementById('char-ref-input').value = '';
+  document.getElementById('char-modal').classList.remove('hidden');
+}
+
+function showEditModal(charId) {
+  const c = characters.find(x => x.id === charId);
+  if (!c) return;
+  document.getElementById('modal-title').textContent = 'Edit Character';
+  document.getElementById('modal-save-btn').textContent = 'Save Changes';
+  document.getElementById('edit-char-id').value = c.id;
+  document.getElementById('char-name-input').value = c.name;
+  document.getElementById('char-role-input').value = c.role;
+  document.getElementById('char-desc-input').value = c.description;
+  document.getElementById('char-ref-input').value = c.reference_prompt;
+  document.getElementById('char-modal').classList.remove('hidden');
+}
+
+function closeModal() {
+  document.getElementById('char-modal').classList.add('hidden');
+}
+
+async function saveCharacter() {
+  const editId = document.getElementById('edit-char-id').value;
+  const body = {
+    name: document.getElementById('char-name-input').value.trim(),
+    role: document.getElementById('char-role-input').value,
+    description: document.getElementById('char-desc-input').value.trim(),
+    reference_prompt: document.getElementById('char-ref-input').value.trim(),
+  };
+  if (!body.name) { alert('Name is required'); return; }
+
+  const btn = document.getElementById('modal-save-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="material-symbols-outlined text-[16px] animate-spin">progress_activity</span> Saving...';
+
+  try {
+    if (editId) {
+      await fetch(`/api/projects/${projectId}/characters/${editId}`, {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+      });
+      addLog(`Updated ${body.name}`);
+    } else {
+      await fetch(`/api/projects/${projectId}/characters`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+      });
+      addLog(`Added ${body.name}`);
+    }
+    closeModal();
+    await loadCharacters();
+  } catch (e) { alert('Failed to save character'); }
+  btn.disabled = false;
+  btn.innerHTML = editId ? 'Save Changes' : 'Add Character';
+}
+
+async function deleteCharacter(charId) {
+  const c = characters.find(x => x.id === charId);
+  if (!c) return;
+  if (!confirm(`Delete "${c.name}"?`)) return;
+  try {
+    await fetch(`/api/projects/${projectId}/characters/${charId}`, { method: 'DELETE' });
+    addLog(`Deleted ${c.name}`);
+    await loadCharacters();
+  } catch (e) { alert('Failed to delete character'); }
+}
+
+async function extractCharacters() {
+  try {
+    const r = await fetch(`/api/projects/${projectId}/characters/extract`, { method: 'POST' });
+    if (!r.ok) { const e = await r.json(); alert(e.detail || 'Extraction failed'); return; }
+    addLog(`Extracted characters from manuscript`);
+    await loadCharacters();
+  } catch (e) { alert('Extraction failed. Is GEMINI_API_KEY set?'); }
+}
+
+function addLog(msg) {
+  const section = document.getElementById('log-section');
+  const list = document.getElementById('log-list');
+  section.classList.remove('hidden');
+  const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const entry = document.createElement('div');
+  entry.className = 'flex items-start gap-2 text-[11px]';
+  entry.innerHTML = `<span class="text-on-surface-variant/50 shrink-0">${time}</span><span class="text-on-surface-variant">${msg}</span>`;
+  list.prepend(entry);
+  const entries = list.querySelectorAll('div');
+  if (entries.length > 20) entries[entries.length - 1].remove();
+  try { localStorage.setItem('storyweaver_log', JSON.stringify(Array.from(list.children).map(e => e.innerHTML))); } catch (e) {}
+}
+
+function clearLog() {
+  document.getElementById('log-list').innerHTML = '';
+  document.getElementById('log-section').classList.add('hidden');
+  try { localStorage.removeItem('storyweaver_log'); } catch (e) {}
+}
+
+function restoreLog() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('storyweaver_log'));
+    if (saved && saved.length) {
+      const section = document.getElementById('log-section');
+      const list = document.getElementById('log-list');
+      section.classList.remove('hidden');
+      saved.reverse().forEach(html => {
+        const entry = document.createElement('div');
+        entry.className = 'flex items-start gap-2 text-[11px]';
+        entry.innerHTML = html;
+        list.prepend(entry);
+      });
+    }
+  } catch (e) {}
+}
+
+restoreLog();
+init();
+</script>
+</body>
+</html>
