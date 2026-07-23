@@ -193,6 +193,15 @@ tailwind.config = {
           </select>
         </div>
         <div class="h-px w-full bg-outline-variant/10"></div>
+        <div class="space-y-2">
+          <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Duration</label>
+          <div class="flex items-center gap-3">
+            <input id="duration-input" type="number" min="5" max="60" class="w-20 bg-surface-container-low border border-outline-variant/40 rounded-lg p-3 font-body-sm text-on-surface focus:outline-none focus:border-primary text-center" value="10">
+            <span class="font-body-sm text-body-sm text-on-surface-variant">seconds</span>
+            <span class="font-label-sm text-label-sm text-on-surface-variant/60" id="word-estimate">~0 words</span>
+          </div>
+        </div>
+        <div class="h-px w-full bg-outline-variant/10"></div>
         <div class="space-y-3">
           <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Characters</label>
           <div class="flex flex-wrap gap-2" id="character-tags"></div>
@@ -221,6 +230,8 @@ async function init() {
     document.getElementById('nav-characters').href = `/static/characters.html?id=${projectId}`;
     document.getElementById('breadcrumb-project').href = `/static/project.html?id=${projectId}`;
     if (chapterId) document.getElementById('breadcrumb-scene').textContent = 'All scenes (chapter filter)';
+    document.getElementById('narration-input').addEventListener('input', updateWordEstimate);
+    document.getElementById('duration-input').addEventListener('input', updateWordEstimate);
     await loadScenes();
     await loadCharacters();
   }
@@ -282,8 +293,8 @@ function selectScene(index) {
   document.getElementById('prompt-input').value = s.image_prompt || '';
   document.getElementById('voice-select').value = s.voice_id || 'kore';
   document.getElementById('camera-select').value = s.camera_motion || 'slow-zoom';
-
-  document.getElementById('video-prompt-input').value = s.video_prompt || '';
+  document.getElementById('duration-input').value = s.target_seconds || 10;
+  updateWordEstimate();
 
   const img = document.getElementById('preview-image');
   const placeholder = document.getElementById('preview-placeholder');
@@ -312,6 +323,17 @@ function selectScene(index) {
   renderSceneList();
 }
 
+function updateWordEstimate() {
+  const text = document.getElementById('narration-input').value;
+  const sec = parseInt(document.getElementById('duration-input').value) || 10;
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  const maxWords = Math.round(sec * 2.5);
+  const pct = words / maxWords;
+  const color = pct > 1 ? 'text-error' : pct > 0.8 ? 'text-tertiary' : 'text-on-surface-variant/60';
+  document.getElementById('word-estimate').textContent = `~${words} words (max ${maxWords} for ${sec}s)`;
+  document.getElementById('word-estimate').className = `font-label-sm text-label-sm ${color}`;
+}
+
 function renderCharacterTags(scene) {
   const tags = document.getElementById('character-tags');
   const sceneCharIds = scene.character_ids || [];
@@ -331,6 +353,7 @@ async function saveScene() {
     image_prompt: document.getElementById('prompt-input').value,
     voice_id: document.getElementById('voice-select').value,
     camera_motion: document.getElementById('camera-select').value,
+    target_seconds: parseInt(document.getElementById('duration-input').value) || 10,
   };
   try {
     await fetch(`/api/projects/${projectId}/scenes/${s.id}`, {

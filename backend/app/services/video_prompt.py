@@ -9,6 +9,7 @@ def generate_video_prompt(
     character_names: list[str],
     character_descriptions: list[str],
     camera_motion: str,
+    target_seconds: int = 10,
 ) -> str:
     api_key = get_env("GEMINI_API_KEY")
     if not api_key:
@@ -27,6 +28,12 @@ It must describe the visual scene, character actions, and camera motion.
 It MUST also include the exact narration/dialogue text that will be spoken,
 tagged as [NARRATION: ...] at the end of the prompt.
 CRITICAL: Every time you mention a character by name, you MUST prefix the name with @. For example, write "The camera focuses on @Dick Jarvis as he stretches" instead of "Dick Jarvis stretches".
+
+Target video duration: {target_seconds} seconds.
+The [NARRATION: ...] text MUST be speakable within {target_seconds} seconds
+(approximately {int(target_seconds * 2.5)} words max at a normal pace).
+If the provided narration is too long, condense it to fit the time limit
+while preserving the core meaning and dialogue.
 
 Characters available:
 {chars_block}

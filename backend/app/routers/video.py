@@ -46,6 +46,7 @@ def api_generate_video_prompt(project_id: str, scene_id: str):
             character_names=char_names,
             character_descriptions=char_descs,
             camera_motion=scene.camera_motion.value,
+            target_seconds=scene.target_seconds,
         )
     except ValueError as e:
         raise HTTPException(400, str(e))

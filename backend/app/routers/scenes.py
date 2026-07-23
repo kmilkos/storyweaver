@@ -54,6 +54,8 @@ def api_update_scene(project_id: str, scene_id: str, body: SceneUpdate):
         scene.character_ids = body.character_ids
     if body.video_path is not None:
         scene.video_path = body.video_path
+    if body.target_seconds is not None:
+        scene.target_seconds = body.target_seconds
 
     save_scene(scene)
     return scene

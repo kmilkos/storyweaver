@@ -37,6 +37,7 @@ class Scene(BaseModel):
     voice_id: str = "kore"
     camera_motion: CameraMotion = CameraMotion.slow_zoom
     character_ids: list[str] = []
+    target_seconds: int = 10
     status: SceneStatus = SceneStatus.draft
     created_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
 
@@ -49,6 +50,7 @@ class SceneUpdate(BaseModel):
     voice_id: str | None = None
     camera_motion: CameraMotion | None = None
     character_ids: list[str] | None = None
+    target_seconds: int | None = None
 
 
 class SceneSplitRequest(BaseModel):
