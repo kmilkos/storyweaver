@@ -37,6 +37,7 @@ Guidelines:
 - Divide the story into exactly {scenes_count} clearly separated scenes.
 - Each scene should have a distinct setting, visual moment, or narrative beat.
 - Write in a style that is easy to narrate and visualize.
+- Image descriptions must be safe for AI image generation — do NOT use real celebrity names, public figures, brand names, or copyrighted characters. Use role descriptions and physical appearance instead.
 
 Return ONLY valid JSON with this exact structure:
 {{

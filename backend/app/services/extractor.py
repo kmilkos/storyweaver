@@ -59,8 +59,9 @@ For each scene provide:
 
 Rules:
 - Each scene should be a single location/moment
-- Make narration conversational and适合 for voiceover
-- Image prompts should be detailed enough for AI image generation (16:9 cinematic, epic, detailed)
+- Make narration conversational and suitable for voiceover
+- Image prompts must be safe for AI image generation — do NOT use real celebrity names, public figures, brand names, or copyrighted characters. Describe people by their appearance and role instead.
+- Image prompts: 16:9 cinematic, epic, detailed
 - Return ONLY a JSON array of objects with keys: narration, image_prompt, character_names
 - No markdown, no code fences, just raw JSON
 
