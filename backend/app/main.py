@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.config import PROJECTS_DIR, STATIC_DIR
-from app.routers import characters, export, images, projects, scenes, settings, video, voice
+from app.routers import characters, export, generate, images, projects, scenes, settings, video, voice
 
 app = FastAPI(title="StoryWeaver", version="0.1.0")
 
@@ -17,6 +17,7 @@ app.add_middleware(
 
 app.include_router(characters.router)
 app.include_router(export.router)
+app.include_router(generate.router)
 app.include_router(images.router)
 app.include_router(projects.router)
 app.include_router(scenes.router)

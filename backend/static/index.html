@@ -71,7 +71,7 @@ body { background-color: #0b1326; color: #dae2fd; }
     </div>
   </div>
   <div class="px-6 mb-8">
-    <button id="new-project-btn" onclick="document.getElementById('upload-input').click()" class="w-full bg-gradient-to-r from-primary-container to-secondary-container hover:opacity-90 active:scale-95 transition-all duration-300 rounded-lg py-3 px-4 flex items-center justify-center gap-2">
+    <button id="new-project-btn" onclick="document.getElementById('setup-modal').classList.remove('hidden')" class="w-full bg-gradient-to-r from-primary-container to-secondary-container hover:opacity-90 active:scale-95 transition-all duration-300 rounded-lg py-3 px-4 flex items-center justify-center gap-2">
       <span id="new-project-icon" class="material-symbols-outlined text-on-primary-container">add</span>
       <span id="new-project-label" class="font-label-md text-label-md text-on-primary-container uppercase">New Project</span>
     </button>
@@ -145,57 +145,100 @@ body { background-color: #0b1326; color: #dae2fd; }
           <span class="material-symbols-outlined text-4xl text-outline group-hover:text-primary transition-colors">magic_button</span>
         </div>
         <h4 class="font-headline-md text-headline-md text-on-surface mb-2">Start a New Vision</h4>
-        <p class="font-body-sm text-body-sm text-on-surface-variant mb-6 max-w-[200px]">Import a manuscript to begin.</p>
-        <button onclick="document.getElementById('upload-input').click()" class="bg-surface-bright text-on-surface font-label-md text-label-md uppercase tracking-wide py-2 px-6 rounded hover:bg-primary-container hover:text-on-primary-container transition-colors">Import Manuscript</button>
+        <p class="font-body-sm text-body-sm text-on-surface-variant mb-6 max-w-[200px]">Generate a story from an idea or import a manuscript.</p>
+        <button onclick="document.getElementById('setup-modal').classList.remove('hidden')" class="bg-surface-bright text-on-surface font-label-md text-label-md uppercase tracking-wide py-2 px-6 rounded hover:bg-primary-container hover:text-on-primary-container transition-colors">Start New Vision</button>
       </div>
     </section>
   </div>
 </main>
 
 <div id="setup-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm">
-  <div class="bg-surface-container border border-outline-variant/20 rounded-xl p-8 w-full max-w-md mx-4 shadow-2xl">
-    <h3 class="font-headline-md text-headline-md text-on-surface mb-1">Project Setup</h3>
-    <p class="font-body-sm text-body-sm text-on-surface-variant mb-6">Configure your new project before uploading.</p>
-
-    <label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-3 block">Aspect Ratio</label>
-    <div class="grid grid-cols-2 gap-3 mb-6">
-      <label class="flex items-center gap-3 p-3 rounded-lg border border-outline-variant/20 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary-container/10 transition-all">
-        <input type="radio" name="ar" value="16:9" checked class="w-4 h-4 accent-primary shrink-0">
-        <div>
-          <span class="font-body-md text-body-md text-on-surface block">16:9</span>
-          <span class="font-body-sm text-body-sm text-on-surface-variant">Landscape</span>
-        </div>
-      </label>
-      <label class="flex items-center gap-3 p-3 rounded-lg border border-outline-variant/20 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary-container/10 transition-all">
-        <input type="radio" name="ar" value="9:16" class="w-4 h-4 accent-primary shrink-0">
-        <div>
-          <span class="font-body-md text-body-md text-on-surface block">9:16</span>
-          <span class="font-body-sm text-body-sm text-on-surface-variant">Portrait / TikTok</span>
-        </div>
-      </label>
+  <div class="bg-surface-container border border-outline-variant/20 rounded-xl w-full max-w-lg mx-4 shadow-2xl overflow-hidden">
+    <div class="flex border-b border-outline-variant/20">
+      <button id="tab-generate" onclick="switchSetupTab('generate')" class="flex-1 py-4 text-center font-label-md text-label-md uppercase tracking-wider border-b-2 border-primary text-primary transition-colors">Generate</button>
+      <button id="tab-import" onclick="switchSetupTab('import')" class="flex-1 py-4 text-center font-label-md text-label-md uppercase tracking-wider border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors">Import</button>
     </div>
 
-    <label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-3 block">Compile Mode</label>
-    <div class="grid grid-cols-2 gap-3 mb-6">
-      <label class="flex items-center gap-3 p-3 rounded-lg border border-outline-variant/20 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary-container/10 transition-all">
-        <input type="radio" name="mode" value="slideshow" checked class="w-4 h-4 accent-primary shrink-0">
-        <div>
-          <span class="font-body-md text-body-md text-on-surface block">Slideshow</span>
-          <span class="font-body-sm text-body-sm text-on-surface-variant">Images + narration</span>
-        </div>
-      </label>
-      <label class="flex items-center gap-3 p-3 rounded-lg border border-outline-variant/20 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary-container/10 transition-all">
-        <input type="radio" name="mode" value="video" class="w-4 h-4 accent-primary shrink-0">
-        <div>
-          <span class="font-body-md text-body-md text-on-surface block">Video</span>
-          <span class="font-body-sm text-body-sm text-on-surface-variant">Stitch clips</span>
-        </div>
-      </label>
+    <div id="setup-generate" class="p-6">
+      <label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2 block">Story Idea / Theme</label>
+      <input id="theme-input" class="w-full bg-surface-container-low border border-outline-variant/40 rounded-lg p-3 font-body-sm text-on-surface focus:outline-none focus:border-primary mb-5" placeholder="e.g. A detective solving mysteries on Mars...">
+
+      <label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2 block">Video Length</label>
+      <div class="flex items-center gap-4 mb-5">
+        <input id="length-slider" type="range" min="15" max="180" value="60" class="flex-1 accent-primary" oninput="document.getElementById('length-label').textContent=this.value+'s'">
+        <span id="length-label" class="font-label-md text-label-md text-on-surface w-10 text-right">60s</span>
+      </div>
+
+      <label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-3 block">Aspect Ratio</label>
+      <div class="grid grid-cols-2 gap-3 mb-5">
+        <label class="flex items-center gap-3 p-3 rounded-lg border border-outline-variant/20 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary-container/10 transition-all">
+          <input type="radio" name="gen-ar" value="16:9" checked class="w-4 h-4 accent-primary shrink-0">
+          <div><span class="font-body-md text-body-md text-on-surface block">16:9</span><span class="font-body-sm text-body-sm text-on-surface-variant">Landscape</span></div>
+        </label>
+        <label class="flex items-center gap-3 p-3 rounded-lg border border-outline-variant/20 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary-container/10 transition-all">
+          <input type="radio" name="gen-ar" value="9:16" class="w-4 h-4 accent-primary shrink-0">
+          <div><span class="font-body-md text-body-md text-on-surface block">9:16</span><span class="font-body-sm text-body-sm text-on-surface-variant">Portrait / TikTok</span></div>
+        </label>
+      </div>
+
+      <label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-3 block">Compile Mode</label>
+      <div class="grid grid-cols-2 gap-3 mb-6">
+        <label class="flex items-center gap-3 p-3 rounded-lg border border-outline-variant/20 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary-container/10 transition-all">
+          <input type="radio" name="gen-mode" value="slideshow" checked class="w-4 h-4 accent-primary shrink-0">
+          <div><span class="font-body-md text-body-md text-on-surface block">Slideshow</span><span class="font-body-sm text-body-sm text-on-surface-variant">Images + narration</span></div>
+        </label>
+        <label class="flex items-center gap-3 p-3 rounded-lg border border-outline-variant/20 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary-container/10 transition-all">
+          <input type="radio" name="gen-mode" value="video" class="w-4 h-4 accent-primary shrink-0">
+          <div><span class="font-body-md text-body-md text-on-surface block">Video</span><span class="font-body-sm text-body-sm text-on-surface-variant">Stitch clips</span></div>
+        </label>
+      </div>
+
+      <div class="flex gap-3 justify-end">
+        <button onclick="closeSetupModal()" class="px-5 py-2 rounded-lg text-on-surface-variant hover:bg-surface-bright/20 transition-colors font-label-md text-label-md uppercase">Cancel</button>
+        <button id="generate-btn" onclick="generateStory()" class="px-5 py-2 rounded-lg bg-gradient-to-r from-primary-container to-secondary-container text-on-primary-container font-label-md text-label-md uppercase hover:opacity-90 transition-all flex items-center gap-2">
+          <span id="gen-icon" class="material-symbols-outlined text-[16px]">auto_awesome</span>
+          <span id="gen-label">Generate</span>
+        </button>
+      </div>
     </div>
 
-    <div class="flex gap-3 justify-end">
-      <button onclick="document.getElementById('setup-modal').classList.add('hidden'); document.getElementById('upload-input').value = ''; _pendingFile = null;" class="px-5 py-2 rounded-lg text-on-surface-variant hover:bg-surface-bright/20 transition-colors font-label-md text-label-md uppercase">Cancel</button>
-      <button onclick="uploadProject()" class="px-5 py-2 rounded-lg bg-primary text-on-primary font-label-md text-label-md uppercase hover:opacity-90 transition-all">Create</button>
+    <div id="setup-import" class="hidden p-6">
+      <p class="font-body-sm text-body-sm text-on-surface-variant mb-5">Upload a .txt or .pdf manuscript file.</p>
+
+      <div id="import-drop" class="border-2 border-dashed border-outline-variant/40 rounded-xl p-10 text-center cursor-pointer hover:border-primary/50 transition-colors mb-5" onclick="document.getElementById('upload-input').click()">
+        <span class="material-symbols-outlined text-4xl text-outline/50 mb-3 block">upload_file</span>
+        <p class="font-body-md text-body-md text-on-surface-variant">Click to select a file</p>
+        <p class="font-body-sm text-body-sm text-on-surface-variant/50 mt-1">.txt or .pdf</p>
+      </div>
+
+      <label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-3 block">Aspect Ratio</label>
+      <div class="grid grid-cols-2 gap-3 mb-5">
+        <label class="flex items-center gap-3 p-3 rounded-lg border border-outline-variant/20 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary-container/10 transition-all">
+          <input type="radio" name="imp-ar" value="16:9" checked class="w-4 h-4 accent-primary shrink-0">
+          <div><span class="font-body-md text-body-md text-on-surface block">16:9</span><span class="font-body-sm text-body-sm text-on-surface-variant">Landscape</span></div>
+        </label>
+        <label class="flex items-center gap-3 p-3 rounded-lg border border-outline-variant/20 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary-container/10 transition-all">
+          <input type="radio" name="imp-ar" value="9:16" class="w-4 h-4 accent-primary shrink-0">
+          <div><span class="font-body-md text-body-md text-on-surface block">9:16</span><span class="font-body-sm text-body-sm text-on-surface-variant">Portrait / TikTok</span></div>
+        </label>
+      </div>
+
+      <label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-3 block">Compile Mode</label>
+      <div class="grid grid-cols-2 gap-3 mb-6">
+        <label class="flex items-center gap-3 p-3 rounded-lg border border-outline-variant/20 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary-container/10 transition-all">
+          <input type="radio" name="imp-mode" value="slideshow" checked class="w-4 h-4 accent-primary shrink-0">
+          <div><span class="font-body-md text-body-md text-on-surface block">Slideshow</span><span class="font-body-sm text-body-sm text-on-surface-variant">Images + narration</span></div>
+        </label>
+        <label class="flex items-center gap-3 p-3 rounded-lg border border-outline-variant/20 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary-container/10 transition-all">
+          <input type="radio" name="imp-mode" value="video" class="w-4 h-4 accent-primary shrink-0">
+          <div><span class="font-body-md text-body-md text-on-surface block">Video</span><span class="font-body-sm text-body-sm text-on-surface-variant">Stitch clips</span></div>
+        </label>
+      </div>
+
+      <div class="flex gap-3 justify-end">
+        <button onclick="closeSetupModal()" class="px-5 py-2 rounded-lg text-on-surface-variant hover:bg-surface-bright/20 transition-colors font-label-md text-label-md uppercase">Cancel</button>
+        <button id="upload-btn" onclick="uploadProject()" class="px-5 py-2 rounded-lg bg-primary text-on-primary font-label-md text-label-md uppercase hover:opacity-90 transition-all">Upload</button>
+      </div>
     </div>
   </div>
 </div>
@@ -254,6 +297,113 @@ async function loadProjects() {
   }
 }
 
+function switchSetupTab(tab) {
+  const genTab = document.getElementById('tab-generate');
+  const impTab = document.getElementById('tab-import');
+  const genPanel = document.getElementById('setup-generate');
+  const impPanel = document.getElementById('setup-import');
+  if (tab === 'generate') {
+    genTab.className = 'flex-1 py-4 text-center font-label-md text-label-md uppercase tracking-wider border-b-2 border-primary text-primary transition-colors';
+    impTab.className = 'flex-1 py-4 text-center font-label-md text-label-md uppercase tracking-wider border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors';
+    genPanel.classList.remove('hidden');
+    impPanel.classList.add('hidden');
+  } else {
+    impTab.className = 'flex-1 py-4 text-center font-label-md text-label-md uppercase tracking-wider border-b-2 border-primary text-primary transition-colors';
+    genTab.className = 'flex-1 py-4 text-center font-label-md text-label-md uppercase tracking-wider border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors';
+    impPanel.classList.remove('hidden');
+    genPanel.classList.add('hidden');
+  }
+}
+
+function closeSetupModal() {
+  document.getElementById('setup-modal').classList.add('hidden');
+}
+
+function onFilePicked(input) {
+  const file = input.files[0];
+  if (!file) return;
+  _pendingFile = file;
+  switchSetupTab('import');
+}
+
+async function generateStory() {
+  const theme = document.getElementById('theme-input').value.trim();
+  if (!theme) { alert('Enter a story idea or theme.'); return; }
+  const targetSeconds = parseInt(document.getElementById('length-slider').value);
+  const aspectRatio = document.querySelector('input[name="gen-ar"]:checked').value;
+  const compileMode = document.querySelector('input[name="gen-mode"]:checked').value;
+
+  const btn = document.getElementById('generate-btn');
+  const icon = document.getElementById('gen-icon');
+  const label = document.getElementById('gen-label');
+  btn.disabled = true;
+  icon.textContent = 'progress_activity';
+  icon.classList.add('animate-spin');
+  label.textContent = 'Generating...';
+
+  try {
+    const res = await fetch('/api/generate/story', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ theme, target_seconds: targetSeconds, aspect_ratio: aspectRatio, compile_mode: compileMode }),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      alert('Generation failed: ' + (err.detail || res.statusText));
+      return;
+    }
+    const data = await res.json();
+    addLog(`Generated "${data.project.title}" — ${data.scenes_count} scenes`);
+    closeSetupModal();
+    await loadProjects();
+  } catch (e) {
+    alert('Generation failed. Is the backend running and GEMINI_API_KEY set?');
+  } finally {
+    btn.disabled = false;
+    icon.textContent = 'auto_awesome';
+    icon.classList.remove('animate-spin');
+    label.textContent = 'Generate';
+  }
+}
+
+async function uploadProject() {
+  const file = _pendingFile;
+  if (!file) { alert('Select a file first.'); return; }
+  setLoading(true);
+  closeSetupModal();
+  const form = new FormData();
+  form.append('file', file);
+  form.append('aspect_ratio', document.querySelector('input[name="imp-ar"]:checked').value);
+  form.append('compile_mode', document.querySelector('input[name="imp-mode"]:checked').value);
+  try {
+    const res = await fetch('/api/projects/upload', { method: 'POST', body: form });
+    if (res.ok) {
+      const project = await res.json();
+      addLog(`Uploaded "${project.title}" — ${file.name}`);
+      document.getElementById('upload-input').value = '';
+      _pendingFile = null;
+      await loadProjects();
+    } else {
+      const err = await res.json();
+      alert('Upload failed: ' + (err.detail || res.statusText));
+    }
+  } catch (e) {
+    alert('Upload failed. Is the backend running?');
+  } finally {
+    setLoading(false);
+  }
+}
+
+function setLoading(loading) {
+  const btn = document.getElementById('new-project-btn');
+  const icon = document.getElementById('new-project-icon');
+  const label = document.getElementById('new-project-label');
+  btn.disabled = loading;
+  btn.style.opacity = loading ? '0.7' : '1';
+  icon.textContent = loading ? 'hourglass_top' : 'add';
+  label.textContent = loading ? 'Uploading...' : 'New Project';
+}
+
 function addLog(msg) {
   const section = document.getElementById('log-section');
   const list = document.getElementById('log-list');
@@ -291,62 +441,7 @@ function restoreLog() {
   } catch (e) {}
 }
 
-function setLoading(loading) {
-  const btn = document.getElementById('new-project-btn');
-  const icon = document.getElementById('new-project-icon');
-  const label = document.getElementById('new-project-label');
-  btn.disabled = loading;
-  btn.style.opacity = loading ? '0.7' : '1';
-  icon.textContent = loading ? 'hourglass_top' : 'add';
-  label.textContent = loading ? 'Uploading...' : 'New Project';
-}
-
 let _pendingFile = null;
-
-function onFilePicked(input) {
-  const file = input.files[0];
-  if (!file) return;
-  _pendingFile = file;
-  document.getElementById('setup-modal').classList.remove('hidden');
-}
-
-async function uploadProject() {
-  const file = _pendingFile;
-  if (!file) return;
-  setLoading(true);
-  document.getElementById('setup-modal').classList.add('hidden');
-  const form = new FormData();
-  form.append('file', file);
-  form.append('aspect_ratio', document.querySelector('input[name="ar"]:checked').value);
-  form.append('compile_mode', document.querySelector('input[name="mode"]:checked').value);
-  try {
-    const res = await fetch('/api/projects/upload', { method: 'POST', body: form });
-    if (res.ok) {
-      const project = await res.json();
-      addLog(`Uploaded "${project.title}" — ${file.name}`);
-      document.getElementById('upload-input').value = '';
-      _pendingFile = null;
-      await loadProjects();
-    } else {
-      const err = await res.json();
-      alert('Upload failed: ' + (err.detail || res.statusText));
-    }
-  } catch (e) {
-    alert('Upload failed. Is the backend running?');
-  } finally {
-    setLoading(false);
-  }
-}
-
-function setLoading(loading) {
-  const btn = document.getElementById('new-project-btn');
-  const icon = document.getElementById('new-project-icon');
-  const label = document.getElementById('new-project-label');
-  btn.disabled = loading;
-  btn.style.opacity = loading ? '0.7' : '1';
-  icon.textContent = loading ? 'hourglass_top' : 'add';
-  label.textContent = loading ? 'Uploading...' : 'New Project';
-}
 
 restoreLog();
 loadProjects();
