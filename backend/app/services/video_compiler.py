@@ -86,7 +86,7 @@ def _apply_motion(clip: ImageClip, motion: str) -> ImageClip:
         ])
     elif motion == "slow-pan":
         return clip.with_effects([
-            Scroll(duration, {"x": 100, "y": 0}),
+            Scroll(x_speed=100, y_speed=0),
         ])
     elif motion == "dolly":
         return clip.with_effects([
