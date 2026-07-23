@@ -10,6 +10,13 @@ from app.db.json_db import get_project, list_scenes
 from app.models.scene import SceneStatus
 from app.services.video_compiler import compile_preview, compile_video
 
+
+def _resolve_path(path: str) -> str:
+    if path.startswith("/projects/"):
+        return str(PROJECTS_DIR / path[len("/projects/"):])
+    return path
+
+
 router = APIRouter(prefix="/api/projects", tags=["export"])
 
 
@@ -32,8 +39,8 @@ def api_export_preview(project_id: str):
     output_path = project_dir / "exports" / "preview.mp4"
     scene_dicts = [
         {
-            "image_path": s.image_path,
-            "audio_path": s.audio_path,
+            "image_path": _resolve_path(s.image_path),
+            "audio_path": _resolve_path(s.audio_path),
             "camera_motion": s.camera_motion.value,
         }
         for s in ready
@@ -66,8 +73,8 @@ def api_export_full(project_id: str):
     output_path = project_dir / "exports" / f"{project.slug}_full.mp4"
     scene_dicts = [
         {
-            "image_path": s.image_path,
-            "audio_path": s.audio_path,
+            "image_path": _resolve_path(s.image_path),
+            "audio_path": _resolve_path(s.audio_path),
             "camera_motion": s.camera_motion.value,
         }
         for s in ready
