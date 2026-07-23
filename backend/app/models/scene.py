@@ -45,6 +45,7 @@ class Scene(BaseModel):
 class SceneUpdate(BaseModel):
     narration: str | None = None
     image_prompt: str | None = None
+    image_path: str | None = None
     video_prompt: str | None = None
     video_path: str | None = None
     voice_id: str | None = None

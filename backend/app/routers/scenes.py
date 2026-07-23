@@ -46,6 +46,8 @@ def api_update_scene(project_id: str, scene_id: str, body: SceneUpdate):
         scene.narration = body.narration
     if body.image_prompt is not None:
         scene.image_prompt = body.image_prompt
+    if body.image_path is not None:
+        scene.image_path = body.image_path
     if body.voice_id is not None:
         scene.voice_id = body.voice_id
     if body.camera_motion is not None:

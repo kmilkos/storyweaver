@@ -119,9 +119,12 @@ tailwind.config = {
         <div class="w-full max-w-[960px] aspect-video rounded-xl overflow-hidden glass-card relative group shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center justify-center bg-surface-container" id="preview-area">
           <span class="material-symbols-outlined text-6xl text-outline/30" id="preview-placeholder">image</span>
           <img id="preview-image" class="w-full h-full object-cover hidden" alt="Scene preview"/>
+          <video id="preview-video" class="w-full h-full object-cover hidden" controls></video>
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-4">
             <div class="flex justify-end gap-2">
+              <button id="remove-image-btn" onclick="removeImage()" class="w-8 h-8 rounded-full bg-surface/50 backdrop-blur text-white flex items-center justify-center hover:bg-error transition-colors hidden"><span class="material-symbols-outlined text-[18px]">delete</span></button>
               <button onclick="regenerateImage()" class="w-8 h-8 rounded-full bg-surface/50 backdrop-blur text-white flex items-center justify-center hover:bg-primary transition-colors"><span class="material-symbols-outlined text-[18px]">refresh</span></button>
+              <button id="remove-video-btn" onclick="removeVideo()" class="w-8 h-8 rounded-full bg-surface/50 backdrop-blur text-white flex items-center justify-center hover:bg-error transition-colors hidden"><span class="material-symbols-outlined text-[18px]">delete</span></button>
             </div>
           </div>
         </div>
@@ -297,21 +300,38 @@ function selectScene(index) {
   updateWordEstimate();
 
   const img = document.getElementById('preview-image');
+  const previewVideo = document.getElementById('preview-video');
   const placeholder = document.getElementById('preview-placeholder');
-  if (s.image_path) {
+  const removeImgBtn = document.getElementById('remove-image-btn');
+  const removeVidBtn = document.getElementById('remove-video-btn');
+
+  if (s.video_path) {
+    img.classList.add('hidden');
+    placeholder.classList.add('hidden');
+    previewVideo.src = s.video_path;
+    previewVideo.classList.remove('hidden');
+    removeImgBtn.classList.add('hidden');
+    removeVidBtn.classList.remove('hidden');
+  } else if (s.image_path) {
+    previewVideo.classList.add('hidden');
+    placeholder.classList.add('hidden');
     img.src = s.image_path;
     img.classList.remove('hidden');
-    placeholder.classList.add('hidden');
+    removeImgBtn.classList.remove('hidden');
+    removeVidBtn.classList.add('hidden');
   } else {
     img.classList.add('hidden');
+    previewVideo.classList.add('hidden');
     placeholder.classList.remove('hidden');
+    removeImgBtn.classList.add('hidden');
+    removeVidBtn.classList.add('hidden');
   }
 
-  const video = document.getElementById('video-preview');
+  const settingsVideo = document.getElementById('video-preview');
   const videoContainer = document.getElementById('video-preview-container');
   const uploadArea = document.getElementById('video-upload-area');
   if (s.video_path) {
-    video.src = s.video_path;
+    settingsVideo.src = s.video_path;
     videoContainer.classList.remove('hidden');
     uploadArea.classList.add('hidden');
   } else {
@@ -364,6 +384,19 @@ async function saveScene() {
     Object.assign(s, body);
     addLog(`Saved Scene ${s.order}`);
   } catch (e) {}
+}
+
+async function removeImage() {
+  const s = scenes[currentScene];
+  await fetch(`/api/projects/${projectId}/scenes/${s.id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ image_path: '' })
+  });
+  s.image_path = '';
+  s.status = 'draft';
+  addLog(`Removed image from Scene ${s.order}`);
+  selectScene(currentScene);
 }
 
 async function generateImage() {
