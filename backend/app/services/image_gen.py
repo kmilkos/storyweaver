@@ -6,36 +6,45 @@ from app.config import get_env
 
 
 def generate_image(prompt: str, output_path: Path, width: int = 1920, height: int = 1080) -> str:
-    stability_key = get_env("STABILITY_API_KEY")
     gemini_key = get_env("GEMINI_API_KEY")
+    stability_key = get_env("STABILITY_API_KEY")
+
+    if gemini_key:
+        try:
+            return _generate_gemini(prompt, output_path)
+        except Exception as e:
+            raise ValueError(f"Gemini image generation failed: {e}")
 
     if stability_key:
         return _generate_stability(prompt, output_path, width, height)
 
-    if gemini_key:
-        try:
-            return _generate_imagen(prompt, output_path)
-        except Exception:
-            pass
-
     raise ValueError(
-        "No image generation API configured. Set STABILITY_API_KEY or GEMINI_API_KEY."
+        "No image generation API configured. Set GEMINI_API_KEY or STABILITY_API_KEY."
     )
 
 
-def _generate_imagen(prompt: str, output_path: Path) -> str:
+def _generate_gemini(prompt: str, output_path: Path) -> str:
     from google import genai
+    from google.genai import types
 
     api_key = get_env("GEMINI_API_KEY")
     client = genai.Client(api_key=api_key)
-    response = client.models.generate_images(
-        model="imagen-3.0-generate-002",
-        prompt=prompt,
-        config={"number_of_images": 1},
+
+    response = client.models.generate_content(
+        model="gemini-2.5-flash-image",
+        contents=prompt,
+        config=types.GenerateContentConfig(
+            response_modalities=["Text", "Image"],
+        ),
     )
-    image_data = response.data[0].image_bytes
-    output_path.write_bytes(image_data)
-    return str(output_path)
+
+    for candidate in response.candidates:
+        for part in candidate.content.parts:
+            if part.inline_data and part.inline_data.mime_type.startswith("image/"):
+                output_path.write_bytes(part.inline_data.data)
+                return str(output_path)
+
+    raise ValueError("Gemini returned no image data in the response")
 
 
 def _generate_stability(prompt: str, output_path: Path, width: int, height: int) -> str:
