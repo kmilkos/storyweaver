@@ -185,6 +185,7 @@ tailwind.config = {
 <script>
 const params = new URLSearchParams(window.location.search);
 const projectId = params.get('id');
+let chapterId = params.get('chapter_id');
 let scenes = [];
 let characters = [];
 let voices = [];
@@ -195,6 +196,7 @@ async function init() {
   if (projectId) {
     document.getElementById('nav-project').href = `/static/project.html?id=${projectId}`;
     document.getElementById('breadcrumb-project').href = `/static/project.html?id=${projectId}`;
+    if (chapterId) document.getElementById('breadcrumb-scene').textContent = 'Chapter scenes';
     await loadScenes();
     await loadCharacters();
   }
@@ -211,8 +213,15 @@ async function loadVoices() {
 
 async function loadScenes() {
   try {
-    const r = await fetch(`/api/projects/${projectId}/scenes`);
+    let url = `/api/projects/${projectId}/scenes`;
+    if (chapterId) url += `?chapter_id=${chapterId}`;
+    let r = await fetch(url);
     scenes = await r.json();
+    if (chapterId && scenes.length === 0) {
+      r = await fetch(`/api/projects/${projectId}/scenes`);
+      scenes = await r.json();
+      if (scenes.length) chapterId = null;
+    }
     renderSceneList();
     if (scenes.length) selectScene(0);
   } catch (e) {}
@@ -227,7 +236,7 @@ async function loadCharacters() {
 
 function renderSceneList() {
   const list = document.getElementById('scene-list');
-  document.getElementById('scene-list-title').textContent = `${scenes.length} Scenes`;
+  document.getElementById('scene-list-title').textContent = chapterId ? `Chapter · ${scenes.length} Scenes` : `${scenes.length} Scenes`;
   list.innerHTML = scenes.map((s, i) => {
     const active = i === currentScene ? 'bg-primary-container/10 border-primary/30 shadow-[inset_4px_0_0_0_#d0bcff]' : 'hover:bg-surface-bright/20 border-transparent';
     const hasImage = s.image_path ? '' : 'border-dashed border-outline-variant/50';
