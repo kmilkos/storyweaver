@@ -70,7 +70,14 @@ body { background-color: #0b1326; color: #dae2fd; }
     <a class="flex items-center gap-4 py-2 px-4 text-on-surface-variant hover:bg-surface-bright/20 transition-all rounded-lg"><span class="material-symbols-outlined">movie_edit</span><span class="font-body-md text-body-md">Scenes</span></a>
     <a href="/static/settings.html" class="flex items-center gap-4 py-2 px-4 text-on-surface-variant hover:bg-surface-bright/20 transition-all rounded-lg"><span class="material-symbols-outlined">settings</span><span class="font-body-md text-body-md">Settings</span></a>
   </div>
-  <div class="flex flex-col mt-auto pt-8 px-2 gap-1 border-t border-outline-variant/10 mx-6">
+  <div id="log-section" class="px-3 py-3 mx-3 border-t border-outline-variant/10 hidden">
+    <div class="flex items-center justify-between mb-2">
+      <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Activity Log</span>
+      <button onclick="clearLog()" class="text-on-surface-variant/50 hover:text-primary text-[11px] font-label-sm">Clear</button>
+    </div>
+    <div id="log-list" class="space-y-1 max-h-[160px] overflow-y-auto"></div>
+  </div>
+  <div class="flex flex-col px-2 gap-1 border-t border-outline-variant/10 mx-6 pt-3">
     <a class="flex items-center gap-4 py-2 px-4 text-on-surface-variant hover:bg-surface-bright/20 transition-all rounded-lg"><span class="material-symbols-outlined">help</span><span class="font-label-md text-label-md">Help</span></a>
     <a class="flex items-center gap-4 py-2 px-4 text-error hover:bg-error-container/20 transition-all rounded-lg"><span class="material-symbols-outlined">logout</span><span class="font-label-md text-label-md">Sign Out</span></a>
   </div>
@@ -192,7 +199,7 @@ async function loadProject() {
     const ch = document.getElementById('chapter-list');
     if (project.chapters.length) {
       ch.innerHTML = project.chapters.map(c => `
-        <div class="group p-4 rounded-lg hover:bg-surface-bright/30 transition-colors border border-transparent hover:border-outline-variant/30 cursor-pointer">
+        <div onclick="window.location='/static/editor.html?id=${projectId}'" class="group p-4 rounded-lg hover:bg-surface-bright/30 transition-colors border border-transparent hover:border-outline-variant/30 cursor-pointer">
           <div class="flex justify-between items-start mb-2">
             <h3 class="font-headline-md text-headline-md text-primary-fixed text-lg">${c.title}</h3>
           </div>
@@ -236,6 +243,43 @@ async function loadCharacters() {
   } catch (e) {}
 }
 
+function addLog(msg) {
+  const section = document.getElementById('log-section');
+  const list = document.getElementById('log-list');
+  section.classList.remove('hidden');
+  const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const entry = document.createElement('div');
+  entry.className = 'flex items-start gap-2 text-[11px]';
+  entry.innerHTML = `<span class="text-on-surface-variant/50 shrink-0">${time}</span><span class="text-on-surface-variant">${msg}</span>`;
+  list.prepend(entry);
+  const entries = list.querySelectorAll('div');
+  if (entries.length > 20) entries[entries.length - 1].remove();
+  try { localStorage.setItem('storyweaver_log', JSON.stringify(Array.from(list.children).map(e => e.innerHTML))); } catch (e) {}
+}
+
+function clearLog() {
+  document.getElementById('log-list').innerHTML = '';
+  document.getElementById('log-section').classList.add('hidden');
+  try { localStorage.removeItem('storyweaver_log'); } catch (e) {}
+}
+
+function restoreLog() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('storyweaver_log'));
+    if (saved && saved.length) {
+      const section = document.getElementById('log-section');
+      const list = document.getElementById('log-list');
+      section.classList.remove('hidden');
+      saved.reverse().forEach(html => {
+        const entry = document.createElement('div');
+        entry.className = 'flex items-start gap-2 text-[11px]';
+        entry.innerHTML = html;
+        list.prepend(entry);
+      });
+    }
+  } catch (e) {}
+}
+
 function setExtracting(loading) {
   const btn = document.getElementById('extract-btn');
   const icon = document.getElementById('extract-icon');
@@ -265,6 +309,8 @@ async function extractCharacters() {
   try {
     const r = await fetch(`/api/projects/${projectId}/characters/extract`, { method: 'POST' });
     if (!r.ok) { const e = await r.json(); alert(e.detail || 'Extraction failed'); setExtracting(false); return; }
+    const chars = await r.json();
+    addLog(`Extracted ${chars.length} characters from manuscript`);
     await loadProject();
   } catch (e) { alert('Failed. Is GEMINI_API_KEY set?'); }
   setExtracting(false);
@@ -275,6 +321,8 @@ async function splitScenes() {
   try {
     const r = await fetch(`/api/projects/${projectId}/scenes/split`, { method: 'POST' });
     if (!r.ok) { const e = await r.json(); alert(e.detail || 'Split failed'); setSplitting(false); return; }
+    const scenes = await r.json();
+    addLog(`Split into ${scenes.length} scenes across ${project.chapters.length} chapter(s)`);
     await loadProject();
   } catch (e) { alert('Failed. Is GEMINI_API_KEY set?'); }
   setSplitting(false);
@@ -294,6 +342,7 @@ async function addCharacter() {
   loadCharacters();
 }
 
+restoreLog();
 loadProject();
 </script>
 </body>

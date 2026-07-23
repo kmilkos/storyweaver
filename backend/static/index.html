@@ -99,6 +99,13 @@ body { background-color: #0b1326; color: #dae2fd; }
       <span class="font-body-md text-body-md">Settings</span>
     </a>
   </div>
+  <div id="log-section" class="px-3 py-3 mx-3 border-t border-outline-variant/10 hidden">
+    <div class="flex items-center justify-between mb-2">
+      <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Activity</span>
+      <button onclick="clearLog()" class="text-on-surface-variant/50 hover:text-primary text-[11px] font-label-sm">Clear</button>
+    </div>
+    <div id="log-list" class="space-y-1 max-h-[160px] overflow-y-auto"></div>
+  </div>
   <div class="px-2 mt-auto space-y-1 pt-4 border-t border-outline-variant/10">
     <a class="flex items-center gap-4 py-2 px-4 rounded-lg text-on-surface-variant hover:bg-surface-bright/20 transition-all" href="#"><span class="material-symbols-outlined">help</span><span class="font-body-md text-body-md">Help</span></a>
     <a class="flex items-center gap-4 py-2 px-4 rounded-lg text-error/80 hover:text-error hover:bg-surface-bright/20 transition-all" href="#"><span class="material-symbols-outlined">logout</span><span class="font-body-md text-body-md">Sign Out</span></a>
@@ -203,6 +210,43 @@ async function loadProjects() {
   }
 }
 
+function addLog(msg) {
+  const section = document.getElementById('log-section');
+  const list = document.getElementById('log-list');
+  section.classList.remove('hidden');
+  const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const entry = document.createElement('div');
+  entry.className = 'flex items-start gap-2 text-[11px]';
+  entry.innerHTML = `<span class="text-on-surface-variant/50 shrink-0">${time}</span><span class="text-on-surface-variant">${msg}</span>`;
+  list.prepend(entry);
+  const entries = list.querySelectorAll('div');
+  if (entries.length > 20) entries[entries.length - 1].remove();
+  try { localStorage.setItem('storyweaver_log', JSON.stringify(Array.from(list.children).map(e => e.innerHTML))); } catch (e) {}
+}
+
+function clearLog() {
+  document.getElementById('log-list').innerHTML = '';
+  document.getElementById('log-section').classList.add('hidden');
+  try { localStorage.removeItem('storyweaver_log'); } catch (e) {}
+}
+
+function restoreLog() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('storyweaver_log'));
+    if (saved && saved.length) {
+      const section = document.getElementById('log-section');
+      const list = document.getElementById('log-list');
+      section.classList.remove('hidden');
+      saved.reverse().forEach(html => {
+        const entry = document.createElement('div');
+        entry.className = 'flex items-start gap-2 text-[11px]';
+        entry.innerHTML = html;
+        list.prepend(entry);
+      });
+    }
+  } catch (e) {}
+}
+
 function setLoading(loading) {
   const btn = document.getElementById('new-project-btn');
   const icon = document.getElementById('new-project-icon');
@@ -222,6 +266,8 @@ async function uploadProject(input) {
   try {
     const res = await fetch('/api/projects/upload', { method: 'POST', body: form });
     if (res.ok) {
+      const project = await res.json();
+      addLog(`Uploaded "${project.title}" — ${file.name}`);
       input.value = '';
       await loadProjects();
     } else {
@@ -235,6 +281,7 @@ async function uploadProject(input) {
   }
 }
 
+restoreLog();
 loadProjects();
 </script>
 </body>

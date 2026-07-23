@@ -71,6 +71,13 @@ tailwind.config = {
     <a class="flex items-center gap-4 py-2 px-4 text-primary border-l-4 border-primary bg-primary-container/10 rounded-r transition-all"><span class="material-symbols-outlined">movie_edit</span><span class="font-body-sm text-body-sm font-medium">Scenes</span></a>
     <a href="/static/settings.html" class="flex items-center gap-4 py-2 px-4 text-on-surface-variant rounded hover:bg-surface-bright/20 transition-all"><span class="material-symbols-outlined">settings</span><span class="font-body-sm text-body-sm">Settings</span></a>
   </nav>
+  <div id="log-section" class="px-3 py-3 mx-3 border-t border-outline-variant/10 hidden">
+    <div class="flex items-center justify-between mb-2">
+      <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Activity</span>
+      <button onclick="clearLog()" class="text-on-surface-variant/50 hover:text-primary text-[11px] font-label-sm">Clear</button>
+    </div>
+    <div id="log-list" class="space-y-1 max-h-[160px] overflow-y-auto"></div>
+  </div>
   <div class="px-2 mt-auto pt-4 border-t border-outline-variant/10">
     <a class="flex items-center gap-4 py-2 px-4 text-on-surface-variant rounded hover:bg-surface-bright/20 transition-all"><span class="material-symbols-outlined text-[20px]">help</span><span class="font-body-sm text-body-sm">Help</span></a>
     <a class="flex items-center gap-4 py-2 px-4 text-on-surface-variant rounded hover:bg-surface-bright/20 transition-all"><span class="material-symbols-outlined text-[20px]">logout</span><span class="font-body-sm text-body-sm">Sign Out</span></a>
@@ -292,6 +299,7 @@ async function saveScene() {
       body: JSON.stringify(body)
     });
     Object.assign(s, body);
+    addLog(`Saved Scene ${s.order}`);
   } catch (e) {}
 }
 
@@ -304,6 +312,7 @@ async function generateImage() {
     const data = await r.json();
     s.image_path = data.image_path;
     s.status = 'image_generated';
+    addLog(`Generated image for Scene ${s.order}`);
     selectScene(currentScene);
   } catch (e) { alert('Image generation failed. Check API key.'); }
 }
@@ -322,6 +331,7 @@ async function generateAudio() {
     const data = await r.json();
     s.audio_path = data.audio_path;
     s.status = 'audio_generated';
+    addLog(`Generated audio for Scene ${s.order}`);
   } catch (e) { alert('Audio generation failed. Check API key.'); }
 }
 
@@ -347,6 +357,7 @@ async function previewVideo() {
     const r = await fetch(`/api/projects/${projectId}/export/preview`, { method: 'POST' });
     if (!r.ok) { const e = await r.json(); alert(e.detail || 'Preview failed'); return; }
     const data = await r.json();
+    addLog('Preview video compiled');
     window.open(data.url, '_blank');
   } catch (e) { alert('Preview failed. Need images + audio.'); }
 }
@@ -356,10 +367,49 @@ async function compileVideo() {
     const r = await fetch(`/api/projects/${projectId}/export/compile`, { method: 'POST' });
     if (!r.ok) { const e = await r.json(); alert(e.detail || 'Compile failed'); return; }
     const data = await r.json();
+    addLog('Full video compiled and ready for download');
     window.open(data.url, '_blank');
   } catch (e) { alert('Compile failed.'); }
 }
 
+function addLog(msg) {
+  const section = document.getElementById('log-section');
+  const list = document.getElementById('log-list');
+  section.classList.remove('hidden');
+  const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const entry = document.createElement('div');
+  entry.className = 'flex items-start gap-2 text-[11px]';
+  entry.innerHTML = `<span class="text-on-surface-variant/50 shrink-0">${time}</span><span class="text-on-surface-variant">${msg}</span>`;
+  list.prepend(entry);
+  const entries = list.querySelectorAll('div');
+  if (entries.length > 20) entries[entries.length - 1].remove();
+  try { localStorage.setItem('storyweaver_log', JSON.stringify(Array.from(list.children).map(e => e.innerHTML))); } catch (e) {}
+}
+
+function clearLog() {
+  document.getElementById('log-list').innerHTML = '';
+  document.getElementById('log-section').classList.add('hidden');
+  try { localStorage.removeItem('storyweaver_log'); } catch (e) {}
+}
+
+function restoreLog() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('storyweaver_log'));
+    if (saved && saved.length) {
+      const section = document.getElementById('log-section');
+      const list = document.getElementById('log-list');
+      section.classList.remove('hidden');
+      saved.reverse().forEach(html => {
+        const entry = document.createElement('div');
+        entry.className = 'flex items-start gap-2 text-[11px]';
+        entry.innerHTML = html;
+        list.prepend(entry);
+      });
+    }
+  } catch (e) {}
+}
+
+restoreLog();
 init();
 </script>
 </body>
