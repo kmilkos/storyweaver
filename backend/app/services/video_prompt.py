@@ -18,7 +18,7 @@ def generate_video_prompt(
     from google import genai
 
     chars_block = "\n".join(
-        f"- @{name}: {desc}"
+        f"- {name}: {desc}"
         for name, desc in zip(character_names, character_descriptions)
     ) or "No characters defined."
 
@@ -27,7 +27,9 @@ Given a scene's details, produce a single rich video generation prompt.
 It must describe the visual scene, character actions, and camera motion.
 It MUST also include the exact narration/dialogue text that will be spoken,
 tagged as [NARRATION: ...] at the end of the prompt.
-CRITICAL: Every time you mention a character by name, you MUST prefix the name with @. For example, write "The camera focuses on @Dick Jarvis as he stretches" instead of "Dick Jarvis stretches".
+IMPORTANT: Do NOT use character names directly. Instead, refer to each character
+by their role or a descriptive phrase (e.g. "the astronaut", "the captain",
+"the chemist", "the engineer"). This avoids content policy restrictions.
 
 Target video duration: {target_seconds} seconds.
 The [NARRATION: ...] text MUST be speakable within {target_seconds} seconds
@@ -35,7 +37,7 @@ The [NARRATION: ...] text MUST be speakable within {target_seconds} seconds
 If the provided narration is too long, condense it to fit the time limit
 while preserving the core meaning and dialogue.
 
-Characters available:
+Characters (use their roles, not names):
 {chars_block}
 
 Scene narration:
@@ -56,11 +58,6 @@ Return ONLY the prompt text, no markdown, no code fences, no extra commentary.""
     text = response.text.strip()
 
     for name in sorted(character_names, key=len, reverse=True):
-        escaped = re.escape(name)
-        text = re.sub(
-            rf'(?<!@)(?<!\w){escaped}(?!\w)',
-            f'@{name}',
-            text,
-        )
+        text = text.replace(f"@{name}", name)
 
     return text
